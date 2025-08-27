@@ -8,7 +8,7 @@ public class LaboRobot extends JuniorRobot
 	@Override	
 	public void run() {
 
-		setColors(red, blue, white, yellow, black);
+		setColors(orange, blue, white, yellow, black);
 		ahead(100);
 		turnGunRight(360);
 		back(100);
