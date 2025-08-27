@@ -12,16 +12,24 @@ public class futbolChampagne implements Estrategia{
 
     @Override
     public void onScannedRobot() {
+        // Si la vida del robot es alta
 
+        // Si la vida del robot es baja
     }
 
     @Override
     public void onHitByBullet() {
+        // Correr hacia algun lado
 
+        // Calcular por donde estaría
+
+        // Disparar
     }
 
     @Override
     public void onHitWall() {
+        // Si puedo saber donde hay una esquina, es ir en la contraria
 
+        // Si no se puede saber, es girar a la derecha o izquierda con una chance
     }
 }
