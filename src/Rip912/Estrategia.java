@@ -2,13 +2,13 @@ package Rip912;
 
 public interface Estrategia {
 
-    public void onScannedRobot();
+    void onScannedRobot();
 
-    public void onHitByBullet();
+    void onHitByBullet();
 
-    public void onHitWall();
+    void onHitWall();
 
-    public void run();
+    void run();
 }
 
 
