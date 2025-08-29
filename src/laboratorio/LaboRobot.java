@@ -13,7 +13,7 @@ public class LaboRobot extends JuniorRobot
 		turnGunRight(360);
 		back(100);
 		turnGunRight(360);
-		
+
 	}
 
 	/**
