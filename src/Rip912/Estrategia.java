@@ -8,6 +8,7 @@ public interface Estrategia {
 
     public void onHitWall();
 
+    public void run();
 }
 
 

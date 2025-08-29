@@ -10,6 +10,9 @@ public class futbolChampagne implements Estrategia{
         this.robot = robot;
     }
 
+    public void run(){
+
+    }
     @Override
     public void onScannedRobot() {
         // Si la vida del robot es alta

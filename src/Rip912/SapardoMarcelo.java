@@ -1,6 +1,8 @@
 package Rip912;
 import robocode.*;
 
+// Suarez Francisco
+// Bicocchi Damián
 public class SapardoMarcelo extends JuniorRobot{
 
     private Estrategia estrategia;
@@ -9,6 +11,7 @@ public class SapardoMarcelo extends JuniorRobot{
     public void run() {
         setColors(red, white, white, red, black);
         estrategia = new futbolChampagne(this);
+        estrategia.run();
     }
 
     /**
