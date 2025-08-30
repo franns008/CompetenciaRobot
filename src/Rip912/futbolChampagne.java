@@ -1,48 +1,76 @@
 package Rip912;
 
 import robocode.JuniorRobot;
-import java.util.Random;
 
 public class futbolChampagne implements Estrategia{
 
     private JuniorRobot robot;
-    String objetivo;
+    private boolean stopWhenISeeARobot = false;
+    private boolean onAWall = false;
+    private MapToWall myMap;
 
-    public futbolChampagne(SapardoMarcelo robot) {
+    public futbolChampagne(JuniorRobot robot) {
         this.robot = robot;
     }
 
     public void run(){
-        int contador = 0;
-        int movimientoDelArma = 0;
-        Random random = new Random();
-        while (true) {
-            // Contador para ver hace cuanto no vemos al enemigo especial
-            contador++;
-            int escalar = random.nextInt(-1, 1);
-            // Si hace 2 turnos no lo vemos, mirar el 33% de las veces 22° a la izq o la derecha, o no girar
-            if ((contador == 2) || (contador == 4))  {
-                // Si es -1, ve a la izquierda, si es 1, ve a la derecha, si es 0 sigue mirando al frente
-                movimientoDelArma = 22 * escalar;
-                robot.turnGunTo(movimientoDelArma);
-            }
-            if (contador == 5){
-                // No encontramos a nadie / lo perdimos
-                objetivo = null;
-            }
-
+        // Que hago en cada turno que sea parte de la estrategia
+        // Moverse hacia una pared
+            // Elegir una pared
+            // Si veo a un robot no me importa, estoy buscando una pared
+        stopWhenISeeARobot = false;
+        myMap = chooseAWall();
+            // Ahora si
+        stopWhenISeeARobot = true;
+            // Moverse hacia ella
+        while (myMap.getDistanceFromWall() != 0) {
+            // Esto se hace ya que puedo ver a un robot en el camino
+            robot.ahead(myMap.getDistanceFromWall());
         }
+        robot.turnTo(180);
+        onAWall = true;
+
     }
 
-    private static int getAnInt() {
-        return 11;
+    private MapToWall chooseAWall() {
+        // 0 = Pared arriba, 1 = Pared derecha, 2 = Pared abajo, 3 = Pared izq
+        double[] arrayOfDistances = {
+                robot.fieldHeight - robot.robotY,
+                robot.fieldWidth - robot.robotX,
+                robot.robotY,
+                robot.robotX
+        };
+        int indexMin = Integer.MAX_VALUE;
+        for (int i=0; i < arrayOfDistances.length; i++){
+            if (arrayOfDistances[i] < indexMin){
+                indexMin = i;
+            }
+        }
+        int angle = indexMin * 90;
+        if (angle == 270) angle = -90;
+
+        MapToWall map = new MapToWall((int)arrayOfDistances[indexMin], indexMin);
+        robot.turnTo(angle);
+        return map;
     }
 
     @Override
     public void onScannedRobot() {
-        // Si la vida del robot es alta
+        if (!stopWhenISeeARobot){
+            return;
+        }
+        // Estoy de camino hacia la pared
+        if (!onAWall) {
+            // parar
+            int x = 1;
+                
 
-        // Si la vida del robot es baja
+            // ver si es util disparar
+            // seguir
+            // return
+        }
+
+
     }
 
     @Override
