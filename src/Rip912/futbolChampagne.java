@@ -2,6 +2,7 @@ package Rip912;
 
 import robocode.JuniorRobot;
 
+
 public class futbolChampagne implements Estrategia{
 
     private JuniorRobot robot;
