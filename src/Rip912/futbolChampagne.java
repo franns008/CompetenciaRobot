@@ -7,6 +7,8 @@ public class futbolChampagne implements Estrategia{
 
     private JuniorRobot robot;
     private boolean stopWhenISeeARobot = false;
+    private boolean volver =false;
+    private boolean volverArma =false;
     private boolean onAWall = false;
     private MapToWall myMap;
 
@@ -24,13 +26,29 @@ public class futbolChampagne implements Estrategia{
             // Ahora si
         stopWhenISeeARobot = true;
             // Moverse hacia ella
-        while (myMap.getDistanceFromWall() != 0) {
-            // Esto se hace ya que puedo ver a un robot en el camino
-            robot.ahead(myMap.getDistanceFromWall());
-        }
-        robot.turnTo(180);
-        onAWall = true;
+        robot.ahead(myMap.getDistanceFromWall());
+        robot.turnRight(90);
+        robot.turnGunRight(90);
 
+        while(onAWall){
+            if(!volver){
+                robot.ahead(20);
+            }else{
+                robot.back(20);
+            }
+            if(robot.gunHeading == 90 ){
+                volverArma = true;
+            } else if (robot.gunHeading == 270) {
+                volverArma = false;
+            }
+            if(volverArma){
+                robot.turnGunLeft(20);
+            }else{
+                robot.turnGunRight(20);
+            }
+
+
+        }
     }
 
     private MapToWall chooseAWall() {
@@ -41,9 +59,9 @@ public class futbolChampagne implements Estrategia{
                 robot.robotY,
                 robot.robotX
         };
-        int indexMin = Integer.MAX_VALUE;
+        int indexMin = 0;
         for (int i=0; i < arrayOfDistances.length; i++){
-            if (arrayOfDistances[i] < indexMin){
+            if (arrayOfDistances[i] < arrayOfDistances[indexMin]){
                 indexMin = i;
             }
         }
@@ -76,15 +94,13 @@ public class futbolChampagne implements Estrategia{
 
     @Override
     public void onHitByBullet() {
-        // Correr hacia algun lado
 
-        // Calcular por donde estaría
-
-        // Disparar
     }
 
     @Override
     public void onHitWall() {
+        if(!onAWall){onAWall = true;}
+        volver=!volver;
         // Si puedo saber donde hay una esquina, es ir en la contraria
 
         // Si no se puede saber, es girar a la derecha o izquierda con una chance
