@@ -11,44 +11,62 @@ public class futbolChampagne implements Estrategia{
     private boolean volverArma =false;
     private boolean onAWall = false;
     private MapToWall myMap;
+    private int cantDisparosRecibidos = 0;
 
     public futbolChampagne(JuniorRobot robot) {
         this.robot = robot;
     }
 
-    public void run(){
+    public void run() {
         // Que hago en cada turno que sea parte de la estrategia
         // Moverse hacia una pared
-            // Elegir una pared
-            // Si veo a un robot no me importa, estoy buscando una pared
+        // Elegir una pared
+        // Si veo a un robot no me importa, estoy buscando una pared
         stopWhenISeeARobot = false;
-        myMap = chooseAWall();
+        while (true){
+            myMap = chooseAWall();
             // Ahora si
-        stopWhenISeeARobot = true;
+            stopWhenISeeARobot = true;
             // Moverse hacia ella
-        robot.ahead(myMap.getDistanceFromWall());
-        robot.turnRight(90);
-        robot.turnGunRight(90);
-
-        while(onAWall){
-            if(!volver){
-                robot.ahead(20);
-            }else{
-                robot.back(20);
-            }
-            if(robot.gunHeading == 90 ){
-                volverArma = true;
-            } else if (robot.gunHeading == 270) {
-                volverArma = false;
-            }
-            if(volverArma){
-                robot.turnGunLeft(20);
-            }else{
-                robot.turnGunRight(20);
+            while (!onAWall) {
+                robot.ahead(10);
             }
 
+            robot.turnRight(90);
+            robot.turnGunRight(90);
 
+            int gunAngle = 0; // Ángulo relativo al cuerpo
+            boolean volverArma = false;
+
+            while (onAWall) {
+                // Mover el robot
+                if (!volver) {
+                    robot.ahead(50);
+                } else {
+                    robot.back(50);
+                }
+
+                // Actualizar ángulo relativo del arma
+                if (volverArma) {
+                    gunAngle -= 10;  // gira a la izquierda
+                } else {
+                    gunAngle += 10;  // gira a la derecha
+                }
+
+                // Limitar la rotación a ±90° relativo al cuerpo
+                if (gunAngle >= 90) {
+                    gunAngle = 90;
+                    volverArma = true;  // invertir dirección
+                } else if (gunAngle <= -10) {
+                    gunAngle = -10;
+                    volverArma = false; // invertir dirección
+                }
+
+                // Girar el arma al ángulo relativo
+                robot.turnGunTo(robot.heading + gunAngle);
+            }
         }
+
     }
 
     private MapToWall chooseAWall() {
@@ -78,23 +96,29 @@ public class futbolChampagne implements Estrategia{
         if (!stopWhenISeeARobot){
             return;
         }
-        // Estoy de camino hacia la pared
         if (!onAWall) {
-            // parar
-            int x = 1;
-                
-
-            // ver si es util disparar
-            // seguir
-            // return
+            //int angulo = this.robot.gunBearing;
+            //this.robot.turnGunTo(this.robot.scannedAngle);
+            this.robot.fire(2);
+            this.robot.fire(2);
+            //this.robot.turnGunTo(angulo);
         }
-
+        if(onAWall){
+            this.robot.fire(1.5);
+        }
 
     }
 
     @Override
     public void onHitByBullet() {
-
+        cantDisparosRecibidos++;
+        this.robot.turnGunTo(this.robot.hitByBulletAngle);
+        this.robot.fire(2);
+        if( (cantDisparosRecibidos % 3)==0) {
+            this.robot.turnRight(90);
+            this.robot.ahead(30);
+            onAWall = false;
+        } // cuando me pegan 3 veces me muevo.
     }
 
     @Override
