@@ -1,7 +1,7 @@
 package Rip912;
 
 public class MapToWall {
-    private Direction direction;
+    private Rip912.Direction direction;
     private int distanceFromWall;
     private int stoppingPoint;
 
@@ -10,13 +10,13 @@ public class MapToWall {
         // 0 = Pared arriba, 1 = Pared derecha, 2 = Pared abajo, 3 = Pared izq
         switch (hardcodedDirection){
             case 0:
-                direction = Direction.NORTH;
+                direction = Rip912.Direction.NORTH;
                 break;
             case 1:
-                direction = Direction.EAST;
+                direction = Rip912.Direction.EAST;
                 break;
             case 2:
-                direction = Direction.SOUTH;
+                direction = Rip912.Direction.SOUTH;
                 break;
             case 3:
                 direction = Direction.WEST;
@@ -28,5 +28,26 @@ public class MapToWall {
 
     public int getDistanceFromWall() {
         return distanceFromWall;
+    }
+
+    public int getAngleToTheCenterOfTheMap(){
+        int pointingToTheCentre = 0;
+        switch (direction){
+            case NORTH:
+                pointingToTheCentre = 180;
+                break;
+            case SOUTH:
+                pointingToTheCentre = 0;
+                break;
+            case EAST:
+                pointingToTheCentre = -90;
+                break;
+            case WEST:
+                pointingToTheCentre = 90;
+                break;
+            default:
+                throw new IllegalArgumentException("Código inválido, no existe esa pared");
+        }
+        return pointingToTheCentre;
     }
 }
