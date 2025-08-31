@@ -3,7 +3,7 @@ package Rip912;
 public class MapToWall {
     private Rip912.Direction direction;
     private int distanceFromWall;
-    private int stoppingPoint;
+
 
     public MapToWall(int distanceFromWall, int hardcodedDirection) {
         this.distanceFromWall = distanceFromWall;
@@ -26,10 +26,6 @@ public class MapToWall {
         }
     }
 
-    public int getDistanceFromWall() {
-        return distanceFromWall;
-    }
-
     public int getAngleToTheCenterOfTheMap(){
         int pointingToTheCentre = 0;
         switch (direction){
@@ -49,5 +45,30 @@ public class MapToWall {
                 throw new IllegalArgumentException("Código inválido, no existe esa pared");
         }
         return pointingToTheCentre;
+    }
+
+    public int askForBulletDirection(int bearing) {
+        int side = 0;
+        switch (direction){
+            case NORTH:
+                if (bearing > 265) side = 1;
+                if (bearing > 85) side = -1;
+                break;
+            case SOUTH:
+                if (bearing > 265) side = -1;
+                if (bearing > 85) side = 1;
+                break;
+            case EAST:
+                if (bearing < 5) side = -1;
+                if (bearing < 185) side = 1;
+                break;
+            case WEST:
+                if (bearing < 5) side = 1;
+                if (bearing < 185) side = -1;
+                break;
+            default:
+                throw new IllegalArgumentException("Código inválido, no existe esa pared");
+        }
+        return side;
     }
 }
