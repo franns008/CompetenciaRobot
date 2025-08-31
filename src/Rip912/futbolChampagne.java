@@ -31,8 +31,7 @@ public class futbolChampagne implements Estrategia{
         robot.turnRight(90);
         robot.turnGunRight(90);
 
-        int gunAngle = 0; // Ángulo relativo al cuerpo
-        boolean volverArma = false;
+
 
         while (onAWall) {
             // Mover el robot
@@ -43,26 +42,6 @@ public class futbolChampagne implements Estrategia{
             }
             shootingStrategy();
 
-            /*
-            // Actualizar ángulo relativo del arma
-            if (volverArma) {
-                gunAngle -= 5;  // gira a la izquierda
-            } else {
-                gunAngle += 5;  // gira a la derecha
-            }
-
-            // Limitar la rotación a ±90° relativo al cuerpo
-            if (gunAngle >= 90) {
-                gunAngle = 90;
-                volverArma = true;  // invertir dirección
-            } else if (gunAngle <= -10) {
-                gunAngle = -10;
-                volverArma = false; // invertir dirección
-            }
-
-            // Girar el arma al ángulo relativo
-            robot.turnGunTo(robot.heading + gunAngle);
-            */
 
         }
     }
@@ -84,7 +63,7 @@ public class futbolChampagne implements Estrategia{
 
         // Modo torreta
         if (robot.others >= 10){
-
+            this.robot.fire(2);
         } else {
             // Modo estratégico
         }
@@ -116,9 +95,7 @@ public class futbolChampagne implements Estrategia{
 
     @Override
     public void onScannedRobot() {
-        if (!stopWhenISeeARobot){
-            return;
-        }
+
         if (!onAWall) {
             int angulo = this.robot.gunBearing;
             this.robot.turnGunTo(this.robot.scannedAngle);
@@ -127,7 +104,7 @@ public class futbolChampagne implements Estrategia{
         }
         if (defensiveMode){
             // Seguramente escanee al que me esta pegando
-
+            this.robot.fire(10);
         }
 
 
@@ -142,38 +119,21 @@ public class futbolChampagne implements Estrategia{
         if (!onAWall){
             return;
         }
-        // norte
-        if (bearing > 225 && bearing < 315) {
-            gunTurn = 0;
-            defensiveMode = true;
-            System.out.println("Norte");
-        }
-        // este
-        else if (bearing > 135 && bearing < 225){
-            gunTurn = 90;
-            defensiveMode = true;
-            System.out.println("Este");
-        }
-        // Sur
-        else if (bearing > 45 && bearing < 135) {
-            gunTurn = 180;
-            defensiveMode = true;
-            System.out.println("sur");
-        }
-        // Oeste
-        else if (bearing == 360) {
-            gunTurn = 270;
-            defensiveMode = true;
-            System.out.println("Oeste");
+
+        if (!defensiveMode && myMap.askForBulletDirection(bearing) != 0){
+            // Hay alguien en una esquina
+            robot.turnGunTo(bearing);
         }
 
 
         if (defensiveMode){
             robot.turnGunRight(gunTurn - robot.gunHeading);
+        } else {
+            this.robot.turnGunTo(this.robot.hitByBulletAngle-5);
+            this.robot.fire(2);
         }
 
-        //this.robot.turnGunTo(this.robot.hitByBulletAngle-5);
-        //this.robot.fire(2);
+
     }
 
     @Override
