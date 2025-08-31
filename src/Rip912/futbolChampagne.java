@@ -29,7 +29,7 @@ public class futbolChampagne implements Estrategia{
         }
 
         robot.turnRight(90);
-        robot.turnGunRight(90);
+        robot.turnGunTo(myMap.getAngleToTheCenterOfTheMap());
 
 
 
@@ -51,7 +51,7 @@ public class futbolChampagne implements Estrategia{
 
         if (defensiveMode){
             // No giro el arma, sigue estando apuntando al posible walls
-            this.robot.fire(10);
+            this.robot.fire(3);
             this.turnsOnDefensiveMode--;
             if (this.turnsOnDefensiveMode == 0){
                 defensiveMode = false;
@@ -59,14 +59,10 @@ public class futbolChampagne implements Estrategia{
 
                 this.robot.turnGunTo(myMap.getAngleToTheCenterOfTheMap());
             }
+            return;
         }
 
-        // Modo torreta
-        if (robot.others >= 10){
-            this.robot.fire(2);
-        } else {
-            // Modo estratégico
-        }
+
 
 
     }

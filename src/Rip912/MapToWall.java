@@ -3,7 +3,7 @@ package Rip912;
 public class MapToWall {
     private Rip912.Direction direction;
     private int distanceFromWall;
-    private int stoppingPoint;
+
 
     public MapToWall(int distanceFromWall, int hardcodedDirection) {
         this.distanceFromWall = distanceFromWall;
@@ -24,10 +24,6 @@ public class MapToWall {
             default:
                 throw new IllegalArgumentException("Código inválido, no existe esa pared");
         }
-    }
-
-    public int getDistanceFromWall() {
-        return distanceFromWall;
     }
 
     public int getAngleToTheCenterOfTheMap(){
