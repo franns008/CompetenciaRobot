@@ -13,6 +13,8 @@ public class futbolChampagne implements Estrategia{
     private MapToWall myMap;
     private int cantDisparosRecibidos = 0;
     private int gunAngle = 0;
+    private boolean sincronizarArma =false;
+    private int cantToques = 0;
 
 
     public futbolChampagne(JuniorRobot robot) {
@@ -31,10 +33,14 @@ public class futbolChampagne implements Estrategia{
         if (gunAngle >= 90) {
             gunAngle = 90;
             volverArma = true;  // invertir dirección
-        } else if (gunAngle <= -10) {
+        } else if (gunAngle <= -90) {
             gunAngle = -10;
             volverArma = false; // invertir dirección
         }
+    }
+
+    private void mirarConPocos(){
+
     }
 
     public void run() {
@@ -66,6 +72,7 @@ public class futbolChampagne implements Estrategia{
                     robot.back(50);
                 }
                 this.chequearTodosLados();
+
                 // Girar el arma al ángulo relativo
                 robot.turnGunTo(robot.heading + gunAngle);
             }
@@ -127,8 +134,14 @@ public class futbolChampagne implements Estrategia{
 
     @Override
     public void onHitWall() {
+        cantToques++;
         if(!onAWall){onAWall = true;}
+        if(cantToques > 1){
+            sincronizarArma = true;
+        }
         volver=!volver;
+
+
         // Si puedo saber donde hay una esquina, es ir en la contraria
 
         // Si no se puede saber, es girar a la derecha o izquierda con una chance
