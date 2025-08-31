@@ -13,9 +13,8 @@ public class futbolChampagne implements Estrategia{
     private MapToWall myMap;
     private int cantDisparosRecibidos = 0;
     private int gunAngle = 0;
-    private boolean sincronizarArma =false;
     private int cantToques = 0;
-
+    private int movimientoCañon = 15;
 
     public futbolChampagne(JuniorRobot robot) {
         this.robot = robot;
@@ -23,24 +22,37 @@ public class futbolChampagne implements Estrategia{
 
     private void chequearTodosLados(){
         // Actualizar ángulo relativo del arma
-        if (volverArma) {
-            gunAngle -= 10;  // gira a la izquierda
-        } else {
-            gunAngle += 10;  // gira a la derecha
+        if (this.robot.others < 6){
+            this.movimientoCañon = 10;
         }
 
+        if (volverArma) {
+            gunAngle -= 15;  // gira a la izquierda
+        } else {
+            gunAngle += 15;  // gira a la derecha
+        }
         // Limitar la rotación a ±90° relativo al cuerpo
-        if (gunAngle >= 90) {
-            gunAngle = 90;
+        if (gunAngle >= 180) {
             volverArma = true;  // invertir dirección
-        } else if (gunAngle <= -90) {
-            gunAngle = -10;
+        } else if (gunAngle <= 0) {
             volverArma = false; // invertir dirección
         }
     }
 
-    private void mirarConPocos(){
-
+    private void posicionArmaEnPared(){
+        if(this.robot.robotX == 0 && this.robot.robotY == 0){
+            this.robot.bearGunTo(180);
+            gunAngle = 180;
+        } else if (this.robot.robotX == 0 && this.robot.robotY == this.robot.fieldHeight) {
+            this.robot.bearGunTo(0);
+            gunAngle = 0;
+        }else if(this.robot.robotX == this.robot.fieldWidth && this.robot.robotY == 0){
+            this.robot.bearGunTo(180);
+            gunAngle = 180;
+        }else{
+            this.robot.bearGunTo(0);
+            gunAngle = 0;
+        }
     }
 
     public void run() {
@@ -71,9 +83,11 @@ public class futbolChampagne implements Estrategia{
                 } else {
                     robot.back(50);
                 }
+
                 this.chequearTodosLados();
 
                 // Girar el arma al ángulo relativo
+
                 robot.turnGunTo(robot.heading + gunAngle);
             }
         }
@@ -126,7 +140,7 @@ public class futbolChampagne implements Estrategia{
         this.robot.turnGunTo(this.robot.hitByBulletAngle);
         this.robot.fire(2);
         if( (cantDisparosRecibidos % 3)==0) {
-            this.robot.turnRight(90);
+            this.robot.turnAheadRight(90,90);
             this.robot.ahead(50);
             onAWall = false;
         } // cuando me pegan 3 veces me muevo.
@@ -136,8 +150,8 @@ public class futbolChampagne implements Estrategia{
     public void onHitWall() {
         cantToques++;
         if(!onAWall){onAWall = true;}
-        if(cantToques > 1){
-            sincronizarArma = true;
+        if(cantToques == 2){
+            this.posicionArmaEnPared();
         }
         volver=!volver;
 
