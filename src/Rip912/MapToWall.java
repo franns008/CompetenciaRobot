@@ -44,6 +44,7 @@ public class MapToWall {
             default:
                 throw new IllegalArgumentException("Código inválido, no existe esa pared");
         }
+        System.out.println("Movi al centro del mapa");
         return pointingToTheCentre;
     }
 
@@ -71,4 +72,6 @@ public class MapToWall {
         }
         return side;
     }
+
+
 }
