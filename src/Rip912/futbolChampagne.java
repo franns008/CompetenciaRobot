@@ -14,7 +14,7 @@ public class futbolChampagne implements Estrategia{
     private int cantDisparosRecibidos = 0;
     private int gunAngle = 0;
     private int cantToques = 0;
-    private int movimientoCañon = 15;
+    private int movimientoCañon = 20;
 
     public futbolChampagne(JuniorRobot robot) {
         this.robot = robot;
@@ -22,14 +22,14 @@ public class futbolChampagne implements Estrategia{
 
     private void chequearTodosLados(){
         // Actualizar ángulo relativo del arma
-        if (this.robot.others < 6){
+        if (this.robot.others <= 7){
             this.movimientoCañon = 10;
         }
 
         if (volverArma) {
-            gunAngle -= 10;  // gira a la izquierda
+            gunAngle -= movimientoCañon;  // gira a la izquierda
         } else {
-            gunAngle += 10;  // gira a la derecha
+            gunAngle += movimientoCañon;  // gira a la derecha
         }
         // Limitar la rotación a ±90° relativo al cuerpo
         if (gunAngle >= 180) {
@@ -119,19 +119,17 @@ public class futbolChampagne implements Estrategia{
             int angulo = this.robot.gunBearing;
             this.robot.turnGunTo(this.robot.scannedAngle);
             this.robot.fire(daño);
-            System.out.println("tirésdawsa");
         }
         if(onAWall){
             this.robot.fire(daño-0.2);
-            System.out.println("tirésdawsa");
         }
     }
     @Override
     public void onScannedRobot() {
-        if(this.robot.scannedDistance<250 || robot.others>5){
+        /*if(this.robot.scannedDistance<250 || robot.others>5){
             this.disparo(2);
-        }
-
+        }*/
+        this.disparo(2);
 
     }
 
@@ -141,7 +139,7 @@ public class futbolChampagne implements Estrategia{
         this.robot.turnGunTo(this.robot.hitByBulletAngle);
         this.robot.fire(2);
         if( (cantDisparosRecibidos % 3)==0) {
-            this.robot.turnAheadRight(90,90);
+            this.robot.turnAheadRight(80,90);
             this.robot.ahead(50);
             onAWall = false;
         } // cuando me pegan 3 veces me muevo.
