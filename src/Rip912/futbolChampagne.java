@@ -147,7 +147,7 @@ public class futbolChampagne implements Estrategia{
 
 
         // Si puedo saber donde hay una esquina, es ir en la contraria
-
+            // hla
         // Si no se puede saber, es girar a la derecha o izquierda con una chance
     }
 }
