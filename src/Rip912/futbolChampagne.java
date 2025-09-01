@@ -27,9 +27,9 @@ public class futbolChampagne implements Estrategia{
         }
 
         if (volverArma) {
-            gunAngle -= 15;  // gira a la izquierda
+            gunAngle -= 10;  // gira a la izquierda
         } else {
-            gunAngle += 15;  // gira a la derecha
+            gunAngle += 10;  // gira a la derecha
         }
         // Limitar la rotación a ±90° relativo al cuerpo
         if (gunAngle >= 180) {
@@ -60,14 +60,13 @@ public class futbolChampagne implements Estrategia{
         // Moverse hacia una pared
         // Elegir una pared
         // Si veo a un robot no me importa, estoy buscando una pared
-        stopWhenISeeARobot = false;
+
         while (true){
             myMap = chooseAWall();
-            // Ahora si
-            stopWhenISeeARobot = true;
+
             // Moverse hacia ella
             while (!onAWall) {
-                robot.ahead(10);
+                robot.ahead(15);
             }
 
             robot.turnRight(90);
@@ -79,9 +78,9 @@ public class futbolChampagne implements Estrategia{
             while (onAWall) {
                 // Mover el robot
                 if (!volver) {
-                    robot.ahead(50);
+                    robot.ahead(35);
                 } else {
-                    robot.back(50);
+                    robot.back(35);
                 }
 
                 this.chequearTodosLados();
@@ -115,22 +114,24 @@ public class futbolChampagne implements Estrategia{
         robot.turnTo(angle);
         return map;
     }
-
-    @Override
-    public void onScannedRobot() {
-        if (!stopWhenISeeARobot){
-            return;
-        }
+    private void disparo(double daño){
         if (!onAWall) {
-            //int angulo = this.robot.gunBearing;
-            //this.robot.turnGunTo(this.robot.scannedAngle);
-            this.robot.fire(2);
-            this.robot.fire(2);
-            //this.robot.turnGunTo(angulo);
+            int angulo = this.robot.gunBearing;
+            this.robot.turnGunTo(this.robot.scannedAngle);
+            this.robot.fire(daño);
+            System.out.println("tirésdawsa");
         }
         if(onAWall){
-            this.robot.fire(1.5);
+            this.robot.fire(daño-0.2);
+            System.out.println("tirésdawsa");
         }
+    }
+    @Override
+    public void onScannedRobot() {
+        if(this.robot.scannedDistance<250 || robot.others>5){
+            this.disparo(2);
+        }
+
 
     }
 
