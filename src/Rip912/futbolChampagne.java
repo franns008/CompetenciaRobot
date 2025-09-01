@@ -20,7 +20,7 @@ public class futbolChampagne implements Estrategia{
         this.robot = robot;
     }
 
-    private void chequearTodosLados(){
+    private void chequearTodosLados(int limite){
         // Actualizar ángulo relativo del arma
         if (this.robot.others <= 7){
             this.movimientoCañon = 10;
@@ -32,7 +32,7 @@ public class futbolChampagne implements Estrategia{
             gunAngle += movimientoCañon;  // gira a la derecha
         }
         // Limitar la rotación a ±90° relativo al cuerpo
-        if (gunAngle >= 180) {
+        if (gunAngle >= limite) {
             volverArma = true;  // invertir dirección
         } else if (gunAngle <= 0) {
             volverArma = false; // invertir dirección
@@ -66,7 +66,9 @@ public class futbolChampagne implements Estrategia{
 
             // Moverse hacia ella
             while (!onAWall) {
-                robot.ahead(15);
+                this.chequearTodosLados(45);
+                robot.turnGunTo(robot.heading + gunAngle);
+                robot.ahead(10);
             }
 
             robot.turnRight(90);
@@ -83,7 +85,7 @@ public class futbolChampagne implements Estrategia{
                     robot.back(35);
                 }
 
-                this.chequearTodosLados();
+                this.chequearTodosLados(180);
 
                 // Girar el arma al ángulo relativo
 
