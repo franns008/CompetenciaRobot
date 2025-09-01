@@ -48,11 +48,9 @@ public class futbolChampagne implements Estrategia{
         // Moverse hacia una pared
         // Elegir una pared
         // Si veo a un robot no me importa, estoy buscando una pared
-        stopWhenISeeARobot = false;
+
         while (true){
             myMap = chooseAWall();
-            // Ahora si
-            stopWhenISeeARobot = true;
             // Moverse hacia ella
             while (!onAWall) {
                 robot.ahead(10);
@@ -104,9 +102,7 @@ public class futbolChampagne implements Estrategia{
 
     @Override
     public void onScannedRobot() {
-        if (!stopWhenISeeARobot){
-            return;
-        }
+
         if (!onAWall) {
             //int angulo = this.robot.gunBearing;
             //this.robot.turnGunTo(this.robot.scannedAngle);
@@ -115,18 +111,26 @@ public class futbolChampagne implements Estrategia{
             //this.robot.turnGunTo(angulo);
         }
         if(onAWall){
-            this.robot.fire(1.5);
+            int robotDistance = this.robot.scannedDistance;
+            int gunPower = 0;
+            if (robotDistance > 200) {
+                gunPower = 1;
+            } else if (robotDistance > 50) {
+                gunPower=2;
+            } else {
+                gunPower=3;
+            }
+            this.robot.fire(gunPower);
         }
 
     }
-
     @Override
     public void onHitByBullet() {
         cantDisparosRecibidos++;
         this.robot.turnGunTo(this.robot.hitByBulletAngle);
-        this.robot.fire(2);
+        this.robot.fire(3);
         if( (cantDisparosRecibidos % 3)==0) {
-            this.robot.turnRight(90);
+            this.robot.turnTo(myMap.getAngleToTheCenterOfTheMap());
             this.robot.ahead(50);
             onAWall = false;
         } // cuando me pegan 3 veces me muevo.
