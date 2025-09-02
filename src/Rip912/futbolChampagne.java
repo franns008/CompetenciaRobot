@@ -15,6 +15,7 @@ public class futbolChampagne implements Estrategia{
     private int gunAngle = 0;
     private int cantToques = 0;
     private int movimientoCañon = 20;
+    private int cant;
 
     public futbolChampagne(JuniorRobot robot) {
         this.robot = robot;
@@ -55,15 +56,15 @@ public class futbolChampagne implements Estrategia{
         }
     }
 
-    private int chequearBloqueo(int cant,int posicionActualx,int posicionActualY){
+    private void chequearBloqueo(int posicionActualx,int posicionActualY){
+
         if(this.robot.robotY == posicionActualY && this.robot.robotX ==posicionActualx){
             cant+=1;
+
         }
-        else{
-            cant=0;
+        else {
+            cant = 0;
         }
-        onAWall =false;
-        return cant;
     }
     public void run() {
         // Que hago en cada turno que sea parte de la estrategia
@@ -73,14 +74,13 @@ public class futbolChampagne implements Estrategia{
 
         while (true){
             myMap = chooseAWall();
-            int cant=0;
             int posicionY=this.robot.robotY;
             int posicionX=this.robot.robotX;
             while (!onAWall) {
-                this.chequearBloqueo(cant,posicionY,posicionX);
+                this.chequearBloqueo(posicionX,posicionY);
                 if(cant==3) {
                     this.robot.turnBackLeft(90, 90);
-                    cant=0;
+
                 }
                 this.chequearTodosLados(45);
                 robot.turnGunTo(robot.heading + gunAngle);
@@ -97,11 +97,13 @@ public class futbolChampagne implements Estrategia{
 
             while (onAWall) {
                 // Mover el robot
+                this.chequearBloqueo(posicionX,posicionY);
 
-                this.chequearBloqueo(cant,posicionY,posicionX);
                 if(cant==3) {
-                    this.robot.turnAheadLeft(90, 90);
-                    cant=0;
+                    onAWall = false;
+                    this.robot.turnRight(90);
+                    this.robot.ahead(80);
+
                 }
                 posicionY=this.robot.robotY;
                 posicionX=this.robot.robotX;
@@ -116,6 +118,11 @@ public class futbolChampagne implements Estrategia{
                 // Girar el arma al ángulo relativo
 
                 robot.turnGunTo(robot.heading + gunAngle);
+                if (cant == 3){
+                    cant=0;
+                    System.out.println("on wall "+onAWall);
+                    onAWall = false;
+                }
             }
         }
 
