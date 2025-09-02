@@ -10,7 +10,7 @@ public class SapardoMarcelo extends JuniorRobot{
     @Override
     public void run() {
         setColors(red, white, white, red, black);
-        estrategia = new futbolChampagne(this);
+        estrategia = new FutbolChampagne(this);
         estrategia.run();
     }
 

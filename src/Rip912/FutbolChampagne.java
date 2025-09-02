@@ -3,10 +3,9 @@ package Rip912;
 import robocode.JuniorRobot;
 
 
-public class futbolChampagne implements Estrategia{
+public class FutbolChampagne implements Estrategia{
 
     private JuniorRobot robot;
-    private boolean stopWhenISeeARobot = false;
     private boolean volver =false;
     private boolean volverArma =false;
     private boolean onAWall = false;
@@ -15,9 +14,9 @@ public class futbolChampagne implements Estrategia{
     private int gunAngle = 0;
     private int cantToques = 0;
     private int movimientoCañon = 20;
-    private int cant;
+    private int hitFromCrashCounter;
 
-    public futbolChampagne(JuniorRobot robot) {
+    public FutbolChampagne(JuniorRobot robot) {
         this.robot = robot;
     }
 
@@ -57,13 +56,11 @@ public class futbolChampagne implements Estrategia{
     }
 
     private void chequearBloqueo(int posicionActualx,int posicionActualY){
-
         if(this.robot.robotY == posicionActualY && this.robot.robotX ==posicionActualx){
-            cant+=1;
-
+            hitFromCrashCounter += 1;
         }
         else {
-            cant = 0;
+            hitFromCrashCounter = 0;
         }
     }
     public void run() {
@@ -78,7 +75,7 @@ public class futbolChampagne implements Estrategia{
             int posicionX=this.robot.robotX;
             while (!onAWall) {
                 this.chequearBloqueo(posicionX,posicionY);
-                if(cant==3) {
+                if(hitFromCrashCounter==3) {
                     this.robot.turnBackLeft(90, 90);
 
                 }
@@ -88,18 +85,14 @@ public class futbolChampagne implements Estrategia{
                 posicionX=this.robot.robotX;
                 robot.ahead(10);
             }
-
             robot.turnRight(90);
             robot.turnGunRight(90);
-
-            // Ángulo relativo al cuerpo
-            boolean volverArma = false;
 
             while (onAWall) {
                 // Mover el robot
                 this.chequearBloqueo(posicionX,posicionY);
 
-                if(cant==3) {
+                if(hitFromCrashCounter==2) {
                     onAWall = false;
                     this.robot.turnRight(90);
                     this.robot.ahead(80);
@@ -112,14 +105,13 @@ public class futbolChampagne implements Estrategia{
                 } else {
                     robot.back(35);
                 }
-
                 this.chequearTodosLados(180);
 
                 // Girar el arma al ángulo relativo
 
                 robot.turnGunTo(robot.heading + gunAngle);
-                if (cant == 3){
-                    cant=0;
+                if (hitFromCrashCounter == 3){
+                    hitFromCrashCounter=0;
                     System.out.println("on wall "+onAWall);
                     onAWall = false;
                 }
@@ -151,7 +143,6 @@ public class futbolChampagne implements Estrategia{
     }
     private void disparo(double daño){
         if (!onAWall) {
-            int angulo = this.robot.gunBearing;
             this.robot.turnGunTo(this.robot.scannedAngle);
             this.robot.fire(daño);
         }
@@ -188,10 +179,5 @@ public class futbolChampagne implements Estrategia{
             this.posicionArmaEnPared();
         }
         volver=!volver;
-
-
-        // Si puedo saber donde hay una esquina, es ir en la contraria
-
-        // Si no se puede saber, es girar a la derecha o izquierda con una chance
     }
 }
