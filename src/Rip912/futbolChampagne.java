@@ -55,6 +55,16 @@ public class futbolChampagne implements Estrategia{
         }
     }
 
+    private int chequearBloqueo(int cant,int posicionActualx,int posicionActualY){
+        if(this.robot.robotY == posicionActualY && this.robot.robotX ==posicionActualx){
+            cant+=1;
+        }
+        else{
+            cant=0;
+        }
+        onAWall =false;
+        return cant;
+    }
     public void run() {
         // Que hago en cada turno que sea parte de la estrategia
         // Moverse hacia una pared
@@ -63,11 +73,19 @@ public class futbolChampagne implements Estrategia{
 
         while (true){
             myMap = chooseAWall();
-
-            // Moverse hacia ella
+            int cant=0;
+            int posicionY=this.robot.robotY;
+            int posicionX=this.robot.robotX;
             while (!onAWall) {
+                this.chequearBloqueo(cant,posicionY,posicionX);
+                if(cant==3) {
+                    this.robot.turnBackLeft(90, 90);
+                    cant=0;
+                }
                 this.chequearTodosLados(45);
                 robot.turnGunTo(robot.heading + gunAngle);
+                posicionY=this.robot.robotY;
+                posicionX=this.robot.robotX;
                 robot.ahead(10);
             }
 
@@ -79,6 +97,14 @@ public class futbolChampagne implements Estrategia{
 
             while (onAWall) {
                 // Mover el robot
+
+                this.chequearBloqueo(cant,posicionY,posicionX);
+                if(cant==3) {
+                    this.robot.turnAheadLeft(90, 90);
+                    cant=0;
+                }
+                posicionY=this.robot.robotY;
+                posicionX=this.robot.robotX;
                 if (!volver) {
                     robot.ahead(35);
                 } else {
