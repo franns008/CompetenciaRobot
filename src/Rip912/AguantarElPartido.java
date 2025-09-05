@@ -7,7 +7,6 @@ public class AguantarElPartido implements Estrategia{
     private JuniorRobot robot;
     private boolean onCorner;
     private int hitByBulletCounter = 0, goingBack = 1;
-    private MapToWall myMap;
 
     public AguantarElPartido(JuniorRobot robot) {
         this.robot = robot;
@@ -33,14 +32,16 @@ public class AguantarElPartido implements Estrategia{
         };
         int indexMin = 0;
         for (int i=0; i < arrayOfDistances.length; i++){
+            System.out.println("La esquina "+ i +" esta a " + arrayOfDistances[i]);
             if (arrayOfDistances[i] < arrayOfDistances[indexMin]){
                 indexMin = i;
             }
         }
-        int angle = 45 * (indexMin + 1);
-        if (angle == 315) angle = -45;
+        int[] angles = {225, 135, 315, 45};
+        int angle = angles[indexMin];
 
         System.out.println("Elegi la esquina" + indexMin);
+
         robot.turnTo(angle);
 
         return arrayOfDistances[indexMin];
@@ -77,7 +78,12 @@ public class AguantarElPartido implements Estrategia{
         // Apuntar el cañón hacia ese ángulo
         double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
         robot.turnGunRight((int)gunTurn);
-        if (robot.scannedDistance < 150) robot.fire(2);
+        if (robot.scannedDistance < 100) {
+            robot.fire(3);
+        }
+        else if (robot.scannedDistance < 200) {
+            robot.fire(2);
+        }
     }
 
     public double calcularAnguloDeDisparo(
@@ -109,7 +115,7 @@ public class AguantarElPartido implements Estrategia{
     public void onHitByBullet() {
         hitByBulletCounter++;
         System.out.println("Me dieron");
-        if (hitByBulletCounter % 5 == 0){
+        if (hitByBulletCounter % 3 == 0){
             System.out.println("No aguanto más");
             double attackingAngle = getAngleToShoot();
             robot.ahead(50);
