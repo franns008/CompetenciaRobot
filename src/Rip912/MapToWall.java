@@ -36,7 +36,7 @@ public class MapToWall {
                 pointingToTheCentre = 0;
                 break;
             case EAST:
-                pointingToTheCentre = -90;
+                pointingToTheCentre = 270;
                 break;
             case WEST:
                 pointingToTheCentre = 90;
@@ -44,7 +44,7 @@ public class MapToWall {
             default:
                 throw new IllegalArgumentException("Código inválido, no existe esa pared");
         }
-        System.out.println("Movi al centro del mapa");
+
         return pointingToTheCentre;
     }
 

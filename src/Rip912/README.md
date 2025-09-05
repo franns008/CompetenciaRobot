@@ -1,5 +1,5 @@
 # Integrantes
 
-### Bicocchi Damián (21114/8)
+### Bicocchi Damián 
 ### Suarez Francisco
 

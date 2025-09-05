@@ -5,12 +5,14 @@ import robocode.*;
 // Bicocchi Damián
 public class SapardoMarcelo extends JuniorRobot{
 
-    private Estrategia estrategia;
+    private Estrategia estrategia; //deprecated
+
+
 
     @Override
     public void run() {
         setColors(red, white, white, red, black);
-        estrategia = new FutbolChampagne(this);
+        estrategia = new AguantarElPartido(this);
         estrategia.run();
     }
 
@@ -36,5 +38,56 @@ public class SapardoMarcelo extends JuniorRobot{
     @Override
     public void onHitWall() {
         this.estrategia.onHitWall();
+    }
+
+
+    private class Michoneta implements Estrategia{
+        private JuniorRobot robot;
+        @Override
+        public void onScannedRobot() {
+
+        }
+
+        @Override
+        public void onHitByBullet() {
+
+        }
+
+        @Override
+        public void onHitWall() {
+
+        }
+
+        @Override
+        public void run() {
+
+        }
+
+        public Michoneta(JuniorRobot robot) {
+            this.robot = robot;
+        }
+    }
+
+    private class Muñeco implements Estrategia {
+
+        @Override
+        public void onScannedRobot() {
+
+        }
+
+        @Override
+        public void onHitByBullet() {
+
+        }
+
+        @Override
+        public void onHitWall() {
+
+        }
+
+        @Override
+        public void run() {
+
+        }
     }
 }

@@ -63,6 +63,7 @@ public class FutbolChampagne implements Estrategia{
             hitFromCrashCounter = 0;
         }
     }
+
     public void run() {
         // Que hago en cada turno que sea parte de la estrategia
         // Moverse hacia una pared
@@ -141,6 +142,7 @@ public class FutbolChampagne implements Estrategia{
         robot.turnTo(angle);
         return map;
     }
+
     private void disparo(double daño){
         if (!onAWall) {
             this.robot.turnGunTo(this.robot.scannedAngle);
