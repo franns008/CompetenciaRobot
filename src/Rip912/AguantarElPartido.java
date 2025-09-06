@@ -126,30 +126,32 @@ public class AguantarElPartido implements Estrategia{
         // Apuntar el cañón hacia ese ángulo
         double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
         robot.turnGunRight((int)gunTurn);
-        if (robot.scannedDistance < 150){ robot.fire(2);}
+        if (robot.scannedDistance < 150 && robot.scannedDistance >= 0){
+            robot.fire(2);
+        }
     }
 
     public double calcularAnguloDeDisparo(
-            double miX, double miY,
-            double enemigoX, double enemigoY,
-            double enemigoVel, double enemigoHeading) {
-            // Tiempo que tarda la bala en recorrer la distancia actual
+        double miX, double miY,
+        double enemigoX, double enemigoY,
+        double enemigoVel, double enemigoHeading) {
+        // Tiempo que tarda la bala en recorrer la distancia actual
 
 
-            // Predicción de posición futura del enemigo
-            double futuroX = enemigoX + Math.sin(Math.toRadians(enemigoHeading)) * enemigoVel ;
-            double futuroY = enemigoY + Math.cos(Math.toRadians(enemigoHeading)) * enemigoVel ;
+        // Predicción de posición futura del enemigo
+        double futuroX = enemigoX + Math.sin(Math.toRadians(enemigoHeading)) * enemigoVel ;
+        double futuroY = enemigoY + Math.cos(Math.toRadians(enemigoHeading)) * enemigoVel ;
 
-            // Calcular ángulo desde mi posición hasta la posición futura
-            double dx = futuroX - miX;
-            double dy = futuroY - miY;
+        // Calcular ángulo desde mi posición hasta la posición futura
+        double dx = futuroX - miX;
+        double dy = futuroY - miY;
 
-            double angulo = Math.toDegrees(Math.atan2(dx, dy));
+        double angulo = Math.toDegrees(Math.atan2(dx, dy));
 
-            // Normalizar entre 0°–360°
-            if (angulo < 0) {
-                angulo += 360;
-            }
+        // Normalizar entre 0°–360°
+        if (angulo < 0) {
+            angulo += 360;
+        }
 
         return angulo;
     }
