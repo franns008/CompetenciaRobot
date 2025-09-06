@@ -10,7 +10,8 @@ public class AguantarElPartido implements Estrategia{
     private int hitByBulletCounter = 0;
     private int cantToques = 0;
     private int gunAngle = 0;
-    private int limiteSup,limiteInf;
+    private int limiteSup = 60;
+    private int limiteInf = 0;
     private int movimientoCañon = 10;
     private MapToWall myMap;
     private boolean volverAtras =false;
@@ -121,37 +122,38 @@ public class AguantarElPartido implements Estrategia{
 
     @Override
     public void onScannedRobot() {
-        if (robot.scannedDistance < 300 && robot.scannedDistance >= 0){
-            double angleToFire = getAngleToShoot();
+        double angleToFire = getAngleToShoot();
 
-            // Apuntar el cañón hacia ese ángulo
-            double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
-            robot.turnGunRight((int)gunTurn);
+        // Apuntar el cañón hacia ese ángulo
+        double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
+        robot.turnGunRight((int)gunTurn);
+        if (robot.scannedDistance < 50){
+            System.out.println("te vi, vas a morir sujeto que esta a "+robot.scannedDistance);
             robot.fire(2);
         }
     }
 
     public double calcularAnguloDeDisparo(
-        double miX, double miY,
-        double enemigoX, double enemigoY,
-        double enemigoVel, double enemigoHeading) {
-        // Tiempo que tarda la bala en recorrer la distancia actual
+            double miX, double miY,
+            double enemigoX, double enemigoY,
+            double enemigoVel, double enemigoHeading) {
+            // Tiempo que tarda la bala en recorrer la distancia actual
 
 
-        // Predicción de posición futura del enemigo
-        double futuroX = enemigoX + Math.sin(Math.toRadians(enemigoHeading)) * enemigoVel ;
-        double futuroY = enemigoY + Math.cos(Math.toRadians(enemigoHeading)) * enemigoVel ;
+            // Predicción de posición futura del enemigo
+            double futuroX = enemigoX + Math.sin(Math.toRadians(enemigoHeading)) * enemigoVel ;
+            double futuroY = enemigoY + Math.cos(Math.toRadians(enemigoHeading)) * enemigoVel ;
 
-        // Calcular ángulo desde mi posición hasta la posición futura
-        double dx = futuroX - miX;
-        double dy = futuroY - miY;
+            // Calcular ángulo desde mi posición hasta la posición futura
+            double dx = futuroX - miX;
+            double dy = futuroY - miY;
 
-        double angulo = Math.toDegrees(Math.atan2(dx, dy));
+            double angulo = Math.toDegrees(Math.atan2(dx, dy));
 
-        // Normalizar entre 0°–360°
-        if (angulo < 0) {
-            angulo += 360;
-        }
+            // Normalizar entre 0°–360°
+            if (angulo < 0) {
+                angulo += 360;
+            }
 
         return angulo;
     }
@@ -241,7 +243,7 @@ public class AguantarElPartido implements Estrategia{
     public void onHitByBullet() {
         hitByBulletCounter++;
         System.out.println("Me dieron");
-        if (hitByBulletCounter % 5 == 0){
+        if (hitByBulletCounter % 3 == 0){
             System.out.println("No aguanto más");
             double attackingAngle = getAngleToShoot();
             if (volverAtras) {
@@ -261,9 +263,9 @@ public class AguantarElPartido implements Estrategia{
         cantToques++;
         if(cantToques ==2) {
             this.onCorner = true;
-        } else if (cantToques>2) {
+        } else if (cantToques < 2) {
             this.onCorner = false;
-            cantToques =0;
+            cantToques = 1;
         }
     }
 
@@ -275,6 +277,7 @@ public class AguantarElPartido implements Estrategia{
             myMap = chooseAWall();
             while (cantToques <1){
                 this.robot.ahead(20);
+                this.chequearTodosLados();
             }
             robot.turnGunRight(90);
             robot.turnRight(90);
@@ -283,8 +286,11 @@ public class AguantarElPartido implements Estrategia{
             while(cantToques<2) {
                 if(volverAtras){
                     this.robot.back(20);
+                    this.chequearTodosLados();
+                    robot.turnGunTo(robot.heading + gunAngle);
                 }else{
                     this.robot.ahead(20);
+                    this.chequearTodosLados();
                 }
             }
             this.corregirArma();
