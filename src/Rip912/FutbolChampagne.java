@@ -84,7 +84,7 @@ public class FutbolChampagne implements Estrategia{
                 robot.turnGunTo(robot.heading + gunAngle);
                 posicionY=this.robot.robotY;
                 posicionX=this.robot.robotX;
-                robot.ahead(10);
+                robot.ahead(15);
             }
             robot.turnRight(90);
             robot.turnGunRight(90);
