@@ -10,7 +10,8 @@ public class AguantarElPartido implements Estrategia{
     private int hitByBulletCounter = 0;
     private int cantToques = 0;
     private int gunAngle = 0;
-    private int limiteSup,limiteInf;
+    private int limiteSup = 60;
+    private int limiteInf = 0;
     private int movimientoCañon = 10;
     private MapToWall myMap;
     private boolean volverAtras =false;
@@ -126,7 +127,10 @@ public class AguantarElPartido implements Estrategia{
         // Apuntar el cañón hacia ese ángulo
         double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
         robot.turnGunRight((int)gunTurn);
-        if (robot.scannedDistance < 150){ robot.fire(2);}
+        if (robot.scannedDistance < 50){
+            System.out.println("te vi, vas a morir sujeto que esta a "+robot.scannedDistance);
+            robot.fire(2);
+        }
     }
 
     public double calcularAnguloDeDisparo(
@@ -239,7 +243,7 @@ public class AguantarElPartido implements Estrategia{
     public void onHitByBullet() {
         hitByBulletCounter++;
         System.out.println("Me dieron");
-        if (hitByBulletCounter % 5 == 0){
+        if (hitByBulletCounter % 3 == 0){
             System.out.println("No aguanto más");
             double attackingAngle = getAngleToShoot();
             if (volverAtras) {
@@ -259,9 +263,9 @@ public class AguantarElPartido implements Estrategia{
         cantToques++;
         if(cantToques ==2) {
             this.onCorner = true;
-        } else if (cantToques>2) {
+        } else if (cantToques < 2) {
             this.onCorner = false;
-            cantToques =0;
+            cantToques = 1;
         }
     }
 
@@ -273,6 +277,7 @@ public class AguantarElPartido implements Estrategia{
             myMap = chooseAWall();
             while (cantToques <1){
                 this.robot.ahead(20);
+                this.chequearTodosLados();
             }
             robot.turnGunRight(90);
             robot.turnRight(90);
@@ -281,8 +286,11 @@ public class AguantarElPartido implements Estrategia{
             while(cantToques<2) {
                 if(volverAtras){
                     this.robot.back(20);
+                    this.chequearTodosLados();
+                    robot.turnGunTo(robot.heading + gunAngle);
                 }else{
                     this.robot.ahead(20);
+                    this.chequearTodosLados();
                 }
             }
             this.corregirArma();
