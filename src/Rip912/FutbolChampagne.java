@@ -137,7 +137,6 @@ public class FutbolChampagne implements Estrategia{
         }
         int angle = indexMin * 90;
         if (angle == 270) angle = -90;
-
         MapToWall map = new MapToWall((int)arrayOfDistances[indexMin], indexMin);
         robot.turnTo(angle);
         return map;

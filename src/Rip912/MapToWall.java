@@ -3,7 +3,7 @@ package Rip912;
 public class MapToWall {
     private Rip912.Direction direction;
     private int distanceFromWall;
-
+    private int pared;
 
     public MapToWall(int distanceFromWall, int hardcodedDirection) {
         this.distanceFromWall = distanceFromWall;
@@ -48,5 +48,11 @@ public class MapToWall {
         return pointingToTheCentre;
     }
 
+    public int getPared() {
+        return pared;
+    }
 
+    public void setPared(int pared) {
+        this.pared = pared;
+    }
 }
