@@ -6,7 +6,14 @@ import robocode.util.Utils;
 public class AguantarElPartido implements Estrategia{
     private JuniorRobot robot;
     private boolean onCorner;
+    private boolean volverArma =false;
     private int hitByBulletCounter = 0, goingBack = 1;
+    private int cantToques = 0;
+    private int gunAngle = 0;
+    private int limiteSup,limiteInf;
+    private int movimientoCañon = 10;
+    private MapToWall myMap;
+    private boolean volverAtras =false;
 
     public AguantarElPartido(JuniorRobot robot) {
         this.robot = robot;
@@ -16,6 +23,21 @@ public class AguantarElPartido implements Estrategia{
         return Math.sqrt(
                 (Math.pow(catA,2)+Math.pow(catB,2))
         );
+    }
+
+
+
+    private void chequearTodosLados(){
+        if (volverArma) {
+            gunAngle -= movimientoCañon;  // gira a la izquierda
+        } else {
+            gunAngle += movimientoCañon;  // gira a la derecha
+        }
+        if (gunAngle >= limiteSup) {
+            volverArma = true;  // invertir dirección
+        } else if (gunAngle <= limiteInf) {
+            volverArma = false; // invertir dirección
+        }
     }
 
     private double chooseACorner() {
@@ -32,20 +54,42 @@ public class AguantarElPartido implements Estrategia{
         };
         int indexMin = 0;
         for (int i=0; i < arrayOfDistances.length; i++){
-            System.out.println("La esquina "+ i +" esta a " + arrayOfDistances[i]);
             if (arrayOfDistances[i] < arrayOfDistances[indexMin]){
                 indexMin = i;
             }
         }
-        int[] angles = {225, 135, 315, 45};
-        int angle = angles[indexMin];
+        int angle = 45 * (indexMin + 1);
+        if (angle == 315) angle = -45;
 
         System.out.println("Elegi la esquina" + indexMin);
-
         robot.turnTo(angle);
 
         return arrayOfDistances[indexMin];
+    }
 
+    private void corregirArma (){
+        if(this.robot.robotY ==0 && this.robot.robotX ==0){
+            this.robot.bearGunTo(90);
+            gunAngle = 90;
+            limiteSup = 90;
+            limiteInf = 0;
+        } else if (this.robot.robotY ==0 && this.robot.robotX ==this.robot.fieldWidth) {
+            this.robot.bearGunTo(180);
+            gunAngle = 180;
+            limiteSup = 180;
+            limiteInf=90;
+        }
+        else if (this.robot.robotY ==this.robot.fieldHeight && this.robot.robotX == 0) {
+            this.robot.bearGunTo(90);
+            gunAngle = 90;
+            limiteSup = 90;
+            limiteInf = 0;
+        }else {
+            gunAngle = 180;
+            limiteSup = 180;
+            limiteInf = 90;
+            this.robot.bearGunTo(180);
+        }
     }
 
     private double getAngleToShoot(){
@@ -73,61 +117,99 @@ public class AguantarElPartido implements Estrategia{
 
     @Override
     public void onScannedRobot() {
-        double angleToFire = getAngleToShoot();
+       /* double angleToFire = getAngleToShoot();
 
         // Apuntar el cañón hacia ese ángulo
         double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
         robot.turnGunRight((int)gunTurn);
-        if (robot.scannedDistance < 100) {
-            robot.fire(3);
-        }
-        else if (robot.scannedDistance < 200) {
-            robot.fire(2);
-        }
+        if (robot.scannedDistance < 150) robot.fire(2);*/
     }
 
     public double calcularAnguloDeDisparo(
             double miX, double miY,
             double enemigoX, double enemigoY,
             double enemigoVel, double enemigoHeading) {
-        // Tiempo que tarda la bala en recorrer la distancia actual
+            // Tiempo que tarda la bala en recorrer la distancia actual
 
 
-        // Predicción de posición futura del enemigo
-        double futuroX = enemigoX + Math.sin(Math.toRadians(enemigoHeading)) * enemigoVel ;
-        double futuroY = enemigoY + Math.cos(Math.toRadians(enemigoHeading)) * enemigoVel ;
+            // Predicción de posición futura del enemigo
+            double futuroX = enemigoX + Math.sin(Math.toRadians(enemigoHeading)) * enemigoVel ;
+            double futuroY = enemigoY + Math.cos(Math.toRadians(enemigoHeading)) * enemigoVel ;
 
-        // Calcular ángulo desde mi posición hasta la posición futura
-        double dx = futuroX - miX;
-        double dy = futuroY - miY;
+            // Calcular ángulo desde mi posición hasta la posición futura
+            double dx = futuroX - miX;
+            double dy = futuroY - miY;
 
-        double angulo = Math.toDegrees(Math.atan2(dx, dy));
+            double angulo = Math.toDegrees(Math.atan2(dx, dy));
 
-        // Normalizar entre 0°–360°
-        if (angulo < 0) {
-            angulo += 360;
-        }
+            // Normalizar entre 0°–360°
+            if (angulo < 0) {
+                angulo += 360;
+            }
 
         return angulo;
+    }
+
+    private MapToWall chooseAWall() {
+        // 0 = Pared arriba, 1 = Pared derecha, 2 = Pared abajo, 3 = Pared izq
+        double[] arrayOfDistances = {
+                robot.fieldHeight - robot.robotY,
+                robot.fieldWidth - robot.robotX,
+                robot.robotY,
+                robot.robotX
+        };
+        int indexMin = 0;
+        for (int i=0; i < arrayOfDistances.length; i++){
+            if (arrayOfDistances[i] < arrayOfDistances[indexMin]){
+                indexMin = i;
+            }
+        }
+        int angle = indexMin * 90;
+        if (angle == 270) angle = -90;
+
+        MapToWall map = new MapToWall((int)arrayOfDistances[indexMin], indexMin);
+        robot.turnTo(angle);
+        return map;
+    }
+
+    private void conocerEsquinaMasCercana(){
+        int distanciaEnY= this.robot.fieldHeight -this.robot.robotY;
+        int distanciaEnX= this.robot.fieldWidth -this.robot.robotX;
+        if (this.robot.robotY==0){
+            if(distanciaEnX> (this.robot.robotX/2)){
+                volverAtras =true;
+            }
+
+        }else{
+            if(distanciaEnY> (this.robot.robotY/2)){
+                volverAtras=true;
+            }
+        }
     }
 
     @Override
     public void onHitByBullet() {
         hitByBulletCounter++;
         System.out.println("Me dieron");
-        if (hitByBulletCounter % 3 == 0){
+        if (hitByBulletCounter % 5 == 0){
             System.out.println("No aguanto más");
             double attackingAngle = getAngleToShoot();
-            robot.ahead(50);
+            robot.turnAheadRight(50,90);
             robot.turnGunRight((int)attackingAngle);
             onCorner = false;
+            cantToques=0;
         }
     }
 
     @Override
     public void onHitWall() {
-        this.onCorner = !this.onCorner;
-        robot.turnTo(robot.hitWallAngle + 180);
+        cantToques++;
+        if(cantToques ==2) {
+            this.onCorner = true;
+        } else if (cantToques>2) {
+            this.onCorner = false;
+            cantToques =0;
+        }
     }
 
     @Override
@@ -135,15 +217,24 @@ public class AguantarElPartido implements Estrategia{
         onCorner = false;
 
         while (true){
-            double distance = chooseACorner();
-            robot.ahead((int) distance);
-            while (onCorner){
-
-                if ((robot.gunHeading == 0) || (robot.gunHeading == 90)
-                        || (robot.gunHeading == 180) || (robot.gunHeading == 270)){
-                    goingBack = goingBack * -1;
+            myMap = chooseAWall();
+            while (cantToques <1){
+                this.robot.ahead(20);
+            }
+            robot.turnGunRight(90);
+            robot.turnRight(90);
+            this.conocerEsquinaMasCercana();
+            while(cantToques<2) {
+                if(volverAtras){
+                    this.robot.back(20);
+                }else{
+                    this.robot.ahead(20);
                 }
-                robot.turnGunTo(robot.gunHeading + (5 * goingBack));
+            }
+            this.corregirArma();
+            while (onCorner){
+                this.chequearTodosLados();
+                this.robot.turnGunTo(this.robot.heading + gunAngle);
             }
         }
     }
