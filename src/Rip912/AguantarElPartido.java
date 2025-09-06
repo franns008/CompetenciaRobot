@@ -7,7 +7,7 @@ public class AguantarElPartido implements Estrategia{
     private JuniorRobot robot;
     private boolean onCorner;
     private boolean volverArma =false;
-    private int hitByBulletCounter = 0, goingBack = 1;
+    private int hitByBulletCounter = 0;
     private int cantToques = 0;
     private int gunAngle = 0;
     private int limiteSup,limiteInf;
@@ -90,6 +90,10 @@ public class AguantarElPartido implements Estrategia{
             limiteInf = 90;
             this.robot.bearGunTo(180);
         }
+        if(volverAtras){
+                 limiteInf += 270;
+                 limiteSup += 270;
+        }
     }
 
     private double getAngleToShoot(){
@@ -117,12 +121,12 @@ public class AguantarElPartido implements Estrategia{
 
     @Override
     public void onScannedRobot() {
-       /* double angleToFire = getAngleToShoot();
+        double angleToFire = getAngleToShoot();
 
         // Apuntar el cañón hacia ese ángulo
         double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
         robot.turnGunRight((int)gunTurn);
-        if (robot.scannedDistance < 150) robot.fire(2);*/
+        if (robot.scannedDistance < 150){ robot.fire(2);}
     }
 
     public double calcularAnguloDeDisparo(
@@ -166,35 +170,84 @@ public class AguantarElPartido implements Estrategia{
         }
         int angle = indexMin * 90;
         if (angle == 270) angle = -90;
-
         MapToWall map = new MapToWall((int)arrayOfDistances[indexMin], indexMin);
+        map.setPared(indexMin);
         robot.turnTo(angle);
         return map;
     }
 
-    private void conocerEsquinaMasCercana(){
-        int distanciaEnY= this.robot.fieldHeight -this.robot.robotY;
-        int distanciaEnX= this.robot.fieldWidth -this.robot.robotX;
-        if (this.robot.robotY==0){
-            if(distanciaEnX> (this.robot.robotX/2)){
-                volverAtras =true;
-            }
+    private int conocerEsquinaMasCercana() {
+        int mitadX = robot.fieldWidth / 2;
+        int mitadY = robot.fieldHeight / 2;
 
-        }else{
-            if(distanciaEnY> (this.robot.robotY/2)){
-                volverAtras=true;
-            }
+        // Mitades
+        boolean enIzquierda = robot.robotX < mitadX;
+        boolean enDerecha = robot.robotX >= mitadX;
+        boolean enAbajo = robot.robotY < mitadY;
+        boolean enArriba = robot.robotY >= mitadY;
+
+        // Determinar la esquina más cercana según el cuadrante
+        int esquina = -1;
+        if (enIzquierda && enAbajo) {
+            esquina = 0; // inf-izq
+        } else if (enDerecha && enAbajo) {
+            esquina = 1; // inf-der
+        } else if (enIzquierda && enArriba) {
+            esquina = 2; // sup-izq
+        } else if (enDerecha && enArriba) {
+            esquina = 3; // sup-der
         }
+        System.out.println("Esquina a la que tengo que ir "+esquina);
+        return esquina;
     }
 
-    @Override
+    private void movimientoEsquina(int esquina){
+        switch (myMap.getPared()){
+            case 0: //pared arriba
+                if(esquina==2) {
+                    volverAtras = true;
+                }else{
+                    volverAtras = false;
+                }
+                break;
+            case 1://pared derecha
+                if(esquina==3) {
+                    volverAtras = true;
+                }else{
+                    volverAtras = false;
+                }
+                break;
+            case 2: // pared abajo
+                if(esquina==1) {
+                    volverAtras = true;
+                }else{
+                    volverAtras = false;
+                }
+                break;
+            case 3: // pared izquieda
+                if(esquina==0) {
+                    volverAtras = true;
+                }else{
+                    volverAtras = false;
+                }
+                break;
+        }
+
+    }
+
+                @Override
     public void onHitByBullet() {
         hitByBulletCounter++;
         System.out.println("Me dieron");
         if (hitByBulletCounter % 5 == 0){
             System.out.println("No aguanto más");
             double attackingAngle = getAngleToShoot();
-            robot.turnAheadRight(50,90);
+            if (volverAtras) {
+                robot.turnAheadRight(50, 90);
+            }else {
+                robot.turnBackRight(50,90);
+            }
+
             robot.turnGunRight((int)attackingAngle);
             onCorner = false;
             cantToques=0;
@@ -223,7 +276,8 @@ public class AguantarElPartido implements Estrategia{
             }
             robot.turnGunRight(90);
             robot.turnRight(90);
-            this.conocerEsquinaMasCercana();
+            int esquina = this.conocerEsquinaMasCercana();
+            this.movimientoEsquina(esquina);
             while(cantToques<2) {
                 if(volverAtras){
                     this.robot.back(20);
