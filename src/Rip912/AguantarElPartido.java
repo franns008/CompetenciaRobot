@@ -176,12 +176,12 @@ public class AguantarElPartido implements Estrategia{
         int distanciaEnY= this.robot.fieldHeight -this.robot.robotY;
         int distanciaEnX= this.robot.fieldWidth -this.robot.robotX;
         if (this.robot.robotY==0){
-            if(distanciaEnX< (this.robot.robotX%2)){
+            if(distanciaEnX> (this.robot.robotX/2)){
                 volverAtras =true;
             }
 
         }else{
-            if(distanciaEnX< (this.robot.robotX%2)){
+            if(distanciaEnY> (this.robot.robotY/2)){
                 volverAtras=true;
             }
         }
