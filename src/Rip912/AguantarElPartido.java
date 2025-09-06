@@ -121,12 +121,12 @@ public class AguantarElPartido implements Estrategia{
 
     @Override
     public void onScannedRobot() {
-        double angleToFire = getAngleToShoot();
+        if (robot.scannedDistance < 300 && robot.scannedDistance >= 0){
+            double angleToFire = getAngleToShoot();
 
-        // Apuntar el cañón hacia ese ángulo
-        double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
-        robot.turnGunRight((int)gunTurn);
-        if (robot.scannedDistance < 150 && robot.scannedDistance >= 0){
+            // Apuntar el cañón hacia ese ángulo
+            double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
+            robot.turnGunRight((int)gunTurn);
             robot.fire(2);
         }
     }
