@@ -15,6 +15,7 @@ public class FutbolChampagne implements Estrategia{
     private int cantToques = 0;
     private int movimientoCañon = 20;
     private int hitFromCrashCounter;
+    private boolean elegirPared = true;
 
 
 
@@ -72,53 +73,51 @@ public class FutbolChampagne implements Estrategia{
         // Elegir una pared
         // Si veo a un robot no me importa, estoy buscando una pared
 
-        while (true){
+        if(elegirPared) {
             myMap = chooseAWall();
-            int posicionY=this.robot.robotY;
+            elegirPared = false;
+        }
+
+        if (!onAWall) {
+            /*int posicionY=this.robot.robotY;
             int posicionX=this.robot.robotX;
-            while (!onAWall) {
-                this.chequearBloqueo(posicionX,posicionY);
-                if(hitFromCrashCounter==3) {
-                    this.robot.turnBackLeft(90, 90);
+            this.chequearBloqueo(posicionX,posicionY);
+            if(hitFromCrashCounter==3) {
+                this.robot.turnBackLeft(90, 90);
+            }*/
+            this.chequearTodosLados(45);
+            robot.turnGunTo(robot.heading + gunAngle);
+            //posicionY=this.robot.robotY;
+            //posicionX=this.robot.robotX;
+            robot.ahead(15);
+        }
+        if (onAWall) {
+            // Mover el robot
+            /*this.chequearBloqueo(posicionX,posicionY);
+            if(hitFromCrashCounter==2) {
+                onAWall = false;
+                this.robot.turnRight(90);
+                this.robot.ahead(80);
 
-                }
-                this.chequearTodosLados(45);
-                robot.turnGunTo(robot.heading + gunAngle);
-                posicionY=this.robot.robotY;
-                posicionX=this.robot.robotX;
-                robot.ahead(15);
+            }*/
+            //posicionY=this.robot.robotY;
+            //posicionX=this.robot.robotX;
+            if (!volver) {
+                robot.ahead(35);
+            } else {
+                robot.back(35);
             }
-            robot.turnRight(90);
-            robot.turnGunRight(90);
+            this.chequearTodosLados(180);
 
-            while (onAWall) {
-                // Mover el robot
-                this.chequearBloqueo(posicionX,posicionY);
+            // Girar el arma al ángulo relativo
 
-                if(hitFromCrashCounter==2) {
-                    onAWall = false;
-                    this.robot.turnRight(90);
-                    this.robot.ahead(80);
-
-                }
-                posicionY=this.robot.robotY;
-                posicionX=this.robot.robotX;
-                if (!volver) {
-                    robot.ahead(35);
-                } else {
-                    robot.back(35);
-                }
-                this.chequearTodosLados(180);
-
-                // Girar el arma al ángulo relativo
-
-                robot.turnGunTo(robot.heading + gunAngle);
-                if (hitFromCrashCounter == 3){
-                    hitFromCrashCounter=0;
-                    System.out.println("on wall "+onAWall);
-                    onAWall = false;
-                }
-            }
+            robot.turnGunTo(robot.heading + gunAngle);
+            /*
+            if (hitFromCrashCounter == 3){
+                hitFromCrashCounter=0;
+                System.out.println("on wall "+onAWall);
+                onAWall = false;
+            }*/
         }
 
     }
@@ -171,16 +170,23 @@ public class FutbolChampagne implements Estrategia{
             this.robot.turnAheadRight(80,90);
             this.robot.ahead(50);
             onAWall = false;
+            elegirPared = true;
+
         } // cuando me pegan 3 veces me muevo.
     }
 
     @Override
     public void onHitWall() {
         cantToques++;
-        if(!onAWall){onAWall = true;}
+        if(!onAWall){onAWall = true;
+            robot.turnRight(90);
+            robot.turnGunRight(90);
+        }
         if(cantToques == 2){
             this.posicionArmaEnPared();
+
         }
         volver=!volver;
+
     }
 }

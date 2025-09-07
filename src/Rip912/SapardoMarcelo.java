@@ -13,8 +13,10 @@ public class SapardoMarcelo extends JuniorRobot{
     public void run() {
         setColors(red, white, white, red, black);
         estratega = new Muñeco(this);
-        estrategia = estratega.run();
-        estrategia.run();
+        while(true) {
+            estrategia = estratega.run();
+            estrategia.run();
+        }
     }
 
     /**
@@ -115,7 +117,7 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia onHitByBullet() {
-            if(this.robot.energy > 60 || !this.estoyEnPared()){
+            if(this.robot.energy > 600 || !this.estoyEnPared()){
                 return this.estrategiaChampagne;
             }
             return this.estrategiaAguntar;
@@ -123,7 +125,7 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia onHitWall() {
-            if(this.robot.energy >60 || !this.estoyEnPared()){
+            if(this.robot.energy >600 || !this.estoyEnPared()){
                 return this.estrategiaChampagne;
             }
             return this.estrategiaAguntar;
@@ -131,10 +133,14 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia run() {
-            if(this.robot.energy >60 || !this.estoyEnPared()){
+            /*if(this.robot.energy >60 ){
+                System.out.println("estoy aca 2");
                 return this.estrategiaChampagne;
+
             }
 
+             */
+            System.out.println("estoy aca");
             return this.estrategiaAguntar;
 
         }

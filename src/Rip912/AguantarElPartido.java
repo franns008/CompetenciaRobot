@@ -15,6 +15,7 @@ public class AguantarElPartido implements Estrategia{
     private int movimientoCañon = 10;
     private MapToWall myMap;
     private boolean volverAtras =false;
+    private boolean elegirPared = true;
 
     public AguantarElPartido(JuniorRobot robot) {
         this.robot = robot;
@@ -122,7 +123,7 @@ public class AguantarElPartido implements Estrategia{
 
     @Override
     public void onScannedRobot() {
-        double angleToFire = getAngleToShoot();
+    /*double angleToFire = getAngleToShoot();
 
         // Apuntar el cañón hacia ese ángulo
         double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
@@ -130,7 +131,9 @@ public class AguantarElPartido implements Estrategia{
         if (robot.scannedDistance < 250){
             robot.fire(2);
         }
+    */
     }
+
 
     public double calcularAnguloDeDisparo(
             double miX, double miY,
@@ -262,45 +265,46 @@ public class AguantarElPartido implements Estrategia{
     @Override
     public void onHitWall() {
         cantToques++;
-        if(cantToques ==2) {
+        if(cantToques == 2) {
             this.onCorner = true;
+            int esquina = this.conocerEsquinaMasCercana();
+
+            this.corregirArma();
         } else if (cantToques < 2) {
             this.onCorner = false;
             cantToques = 1;
+            elegirPared = true;
         }
     }
+
 
     @Override
     public void run() {
         onCorner = false;
-
-        while (true){
-            System.out.println("Entre en el else, hay que aguantar che");
+        if (elegirPared) {
             myMap = chooseAWall();
-            while (cantToques <1){
-                this.robot.ahead(20);
+            elegirPared = false;
+        }
+        if (cantToques <1){
+            this.robot.ahead(20);
+            this.chequearTodosLados();
+            robot.turnGunTo(robot.heading + gunAngle);
+        }
+        if(!onCorner) {
+            if (cantToques < 2) {
+                if (volverAtras) {
+                    this.robot.back(20);
+                } else {
+                    this.robot.ahead(20);
+                }
                 this.chequearTodosLados();
                 robot.turnGunTo(robot.heading + gunAngle);
             }
-            robot.turnGunRight(90);
-            robot.turnRight(90);
-            int esquina = this.conocerEsquinaMasCercana();
-            this.movimientoEsquina(esquina);
-            while(cantToques<2) {
-                if(volverAtras){
-                    this.robot.back(20);
-                    this.chequearTodosLados();
-                    robot.turnGunTo(robot.heading + gunAngle);
-                }else{
-                    this.robot.ahead(20);
-                    this.chequearTodosLados();
-                }
-            }
-            this.corregirArma();
-            while (onCorner){
-                this.chequearTodosLados();
-                this.robot.turnGunTo(this.robot.heading + gunAngle);
-            }
+        }
+        if(onCorner){
+            this.chequearTodosLados();
+            this.robot.turnGunTo(this.robot.heading + gunAngle);
         }
     }
 }
+
