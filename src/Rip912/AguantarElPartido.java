@@ -127,8 +127,7 @@ public class AguantarElPartido implements Estrategia{
         // Apuntar el cañón hacia ese ángulo
         double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
         robot.turnGunRight((int)gunTurn);
-        if (robot.scannedDistance < 50){
-            System.out.println("te vi, vas a morir sujeto que esta a "+robot.scannedDistance);
+        if (robot.scannedDistance < 250){
             robot.fire(2);
         }
     }
@@ -248,8 +247,10 @@ public class AguantarElPartido implements Estrategia{
             double attackingAngle = getAngleToShoot();
             if (volverAtras) {
                 robot.turnAheadRight(50, 90);
+                robot.ahead(30);
             }else {
                 robot.turnBackRight(50,90);
+                robot.back(30);
             }
 
             robot.turnGunRight((int)attackingAngle);
@@ -274,10 +275,12 @@ public class AguantarElPartido implements Estrategia{
         onCorner = false;
 
         while (true){
+            System.out.println("Entre en el else, hay que aguantar che");
             myMap = chooseAWall();
             while (cantToques <1){
                 this.robot.ahead(20);
                 this.chequearTodosLados();
+                robot.turnGunTo(robot.heading + gunAngle);
             }
             robot.turnGunRight(90);
             robot.turnRight(90);

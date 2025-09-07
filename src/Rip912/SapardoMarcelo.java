@@ -115,7 +115,7 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia onHitByBullet() {
-            if(this.robot.energy <60 && this.estoyEnPared()){
+            if(this.robot.energy > 60 || !this.estoyEnPared()){
                 return this.estrategiaChampagne;
             }
             return this.estrategiaAguntar;
@@ -123,7 +123,7 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia onHitWall() {
-            if(this.robot.energy <60 && this.estoyEnPared()){
+            if(this.robot.energy >60 || !this.estoyEnPared()){
                 return this.estrategiaChampagne;
             }
             return this.estrategiaAguntar;
@@ -131,9 +131,10 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia run() {
-            if(this.robot.energy <60 && this.estoyEnPared()){
+            if(this.robot.energy >60 || !this.estoyEnPared()){
                 return this.estrategiaChampagne;
             }
+
             return this.estrategiaAguntar;
 
         }
