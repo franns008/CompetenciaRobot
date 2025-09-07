@@ -14,10 +14,7 @@ public class FutbolChampagne implements Estrategia{
     private int gunAngle = 0;
     private int cantToques = 0;
     private int movimientoCañon = 20;
-    private int hitFromCrashCounter;
     private boolean elegirPared = true;
-
-
 
     public FutbolChampagne(JuniorRobot robot) {
         this.robot = robot;
@@ -58,15 +55,6 @@ public class FutbolChampagne implements Estrategia{
         }
     }
 
-    private void chequearBloqueo(int posicionActualx,int posicionActualY){
-        if(this.robot.robotY == posicionActualY && this.robot.robotX ==posicionActualx){
-            hitFromCrashCounter += 1;
-        }
-        else {
-            hitFromCrashCounter = 0;
-        }
-    }
-
     public void run() {
         // Que hago en cada turno que sea parte de la estrategia
         // Moverse hacia una pared
@@ -79,47 +67,19 @@ public class FutbolChampagne implements Estrategia{
         }
 
         if (!onAWall) {
-            /*int posicionY=this.robot.robotY;
-            int posicionX=this.robot.robotX;
-            this.chequearBloqueo(posicionX,posicionY);
-            if(hitFromCrashCounter==3) {
-                this.robot.turnBackLeft(90, 90);
-            }*/
             this.chequearTodosLados(45);
             robot.turnGunTo(robot.heading + gunAngle);
-            //posicionY=this.robot.robotY;
-            //posicionX=this.robot.robotX;
             robot.ahead(15);
         }
         if (onAWall) {
-            // Mover el robot
-            /*this.chequearBloqueo(posicionX,posicionY);
-            if(hitFromCrashCounter==2) {
-                onAWall = false;
-                this.robot.turnRight(90);
-                this.robot.ahead(80);
-
-            }*/
-            //posicionY=this.robot.robotY;
-            //posicionX=this.robot.robotX;
             if (!volver) {
                 robot.ahead(35);
             } else {
                 robot.back(35);
             }
             this.chequearTodosLados(180);
-
-            // Girar el arma al ángulo relativo
-
             robot.turnGunTo(robot.heading + gunAngle);
-            /*
-            if (hitFromCrashCounter == 3){
-                hitFromCrashCounter=0;
-                System.out.println("on wall "+onAWall);
-                onAWall = false;
-            }*/
         }
-
     }
 
     private MapToWall chooseAWall() {
@@ -187,6 +147,7 @@ public class FutbolChampagne implements Estrategia{
 
         }
         volver=!volver;
-
     }
+
+
 }

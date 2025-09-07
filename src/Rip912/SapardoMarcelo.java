@@ -12,7 +12,7 @@ public class SapardoMarcelo extends JuniorRobot{
     @Override
     public void run() {
         setColors(red, white, white, red, black);
-        estratega = new Muñeco(this);
+        estratega = Muñeco.getInstance(this);
         while(true) {
             estrategia = estratega.run();
             estrategia.run();
@@ -50,98 +50,107 @@ public class SapardoMarcelo extends JuniorRobot{
     }
 
 
-    private class Michoneta implements Estratega{
-        private Estrategia estrategiaAguntar;
+
+
+    private static class Michoneta implements Estratega{
+        private Estrategia estrategiaAguantar;
         private Estrategia estrategiaChampagne;
         private JuniorRobot robot;
+        private static Michoneta instance;
+        private final int minimumNumberOfRobots = 6;
 
-        public Michoneta(JuniorRobot robot) {
+        private Michoneta(JuniorRobot robot) {
             this.robot = robot;
             this.estrategiaChampagne = new FutbolChampagne(robot);
-            this.estrategiaAguntar = new AguantarElPartido(robot);
+            this.estrategiaAguantar = new AguantarElPartido(robot);
 
+        }
+
+        public static Michoneta getInstance(JuniorRobot robot) {
+            if (instance == null) {
+                instance = new Michoneta(robot);
+            }
+            return instance;
         }
 
         @Override
         public Estrategia onScannedRobot() {
-            if(this.robot.others<6){
-                return estrategiaAguntar;
+            if(this.robot.others<minimumNumberOfRobots){
+                return estrategiaAguantar;
             }
             return estrategiaChampagne;
         }
 
         @Override
         public Estrategia onHitByBullet() {
-            if(this.robot.others<6){
-                return estrategiaAguntar;
+            if(this.robot.others<minimumNumberOfRobots){
+                return estrategiaAguantar;
             }
             return estrategiaChampagne;
         }
 
         @Override
         public Estrategia onHitWall() {
-            if(this.robot.others<6){
-                return estrategiaAguntar;
+            if(this.robot.others<minimumNumberOfRobots){
+                return estrategiaAguantar;
             }
             return estrategiaChampagne;
         }
 
         @Override
         public Estrategia run() {
-            if(this.robot.others<6){
-                return estrategiaAguntar;
+            if(this.robot.others<minimumNumberOfRobots){
+                return estrategiaAguantar;
             }
             return estrategiaChampagne;
         }
-
-
-
     }
 
-    private class Muñeco implements Estratega {
-        private Estrategia estrategiaAguntar;
+    private static class Muñeco implements Estratega {
+        private Estrategia estrategiaAguantar;
         private Estrategia estrategiaChampagne;
         private JuniorRobot robot;
+        private static Muñeco instance;
+        private final int minimumEnergy = 600;
 
-        public Muñeco(JuniorRobot robot) {
+        private Muñeco(JuniorRobot robot) {
             this.robot = robot;
             this.estrategiaChampagne = new FutbolChampagne(robot);
-            this.estrategiaAguntar = new AguantarElPartido(robot);
+            this.estrategiaAguantar = new AguantarElPartido(robot);
 
         }
         @Override
         public Estrategia onScannedRobot() {
+            return this.estrategiaAguantar;
+        }
 
-            return this.estrategiaAguntar;
+        public static Muñeco getInstance(JuniorRobot robot) {
+
+            if (instance == null) {
+                instance = new Muñeco(robot);
+            }
+            return instance;
         }
 
         @Override
         public Estrategia onHitByBullet() {
-            if(this.robot.energy > 600 || !this.estoyEnPared()){
+            if(this.robot.energy > minimumEnergy || !this.estoyEnPared()){
                 return this.estrategiaChampagne;
             }
-            return this.estrategiaAguntar;
+            return this.estrategiaAguantar;
         }
 
         @Override
         public Estrategia onHitWall() {
-            if(this.robot.energy >600 || !this.estoyEnPared()){
+            if(this.robot.energy >minimumEnergy || !this.estoyEnPared()){
                 return this.estrategiaChampagne;
             }
-            return this.estrategiaAguntar;
+            return this.estrategiaAguantar;
         }
 
         @Override
         public Estrategia run() {
-            /*if(this.robot.energy >60 ){
-                System.out.println("estoy aca 2");
-                return this.estrategiaChampagne;
-
-            }
-
-             */
-            System.out.println("estoy aca");
-            return this.estrategiaAguntar;
+            return this.estrategiaAguantar;
 
         }
 
