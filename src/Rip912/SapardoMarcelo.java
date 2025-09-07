@@ -49,9 +49,6 @@ public class SapardoMarcelo extends JuniorRobot{
         estrategia.onHitWall();
     }
 
-
-
-
     private static class Michoneta implements Estratega{
         private Estrategia estrategiaAguantar;
         private Estrategia estrategiaChampagne;

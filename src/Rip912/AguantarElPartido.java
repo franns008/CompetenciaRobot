@@ -96,9 +96,13 @@ public class AguantarElPartido implements Estrategia{
         // Apuntar el cañón hacia ese ángulo
         double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
         robot.turnGunRight((int)gunTurn);
+        if (robot.scannedDistance < 100){
+            robot.fire(3);
+        }
         if (robot.scannedDistance < 250){
             robot.fire(2);
         }
+
 
     }
 
@@ -225,7 +229,7 @@ public class AguantarElPartido implements Estrategia{
             }
 
             robot.turnGunRight((int)attackingAngle);
-            robot.fire(1.5);
+            robot.fire(1);
             onCorner = false;
             cantToques=0;
             elegirPared =true;
