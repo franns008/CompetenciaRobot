@@ -16,6 +16,8 @@ public class FutbolChampagne implements Estrategia{
     private int movimientoCañon = 20;
     private int hitFromCrashCounter;
 
+
+
     public FutbolChampagne(JuniorRobot robot) {
         this.robot = robot;
     }
