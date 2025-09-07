@@ -104,6 +104,9 @@ public class SapardoMarcelo extends JuniorRobot{
             }
             return estrategiaChampagne;
         }
+
+
+
     }
 
     private static class Muñeco implements Estratega {
