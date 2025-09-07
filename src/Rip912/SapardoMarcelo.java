@@ -12,7 +12,7 @@ public class SapardoMarcelo extends JuniorRobot{
     @Override
     public void run() {
         setColors(red, white, white, red, black);
-        estratega = new Michoneta(this);
+        estratega = new Muñeco(this);
         estrategia = estratega.run();
         estrategia.run();
     }
@@ -93,28 +93,57 @@ public class SapardoMarcelo extends JuniorRobot{
         }
 
 
+
     }
 
-    private class Muñeco implements Estrategia {
+    private class Muñeco implements Estratega {
+        private Estrategia estrategiaAguntar;
+        private Estrategia estrategiaChampagne;
+        private JuniorRobot robot;
 
+        public Muñeco(JuniorRobot robot) {
+            this.robot = robot;
+            this.estrategiaChampagne = new FutbolChampagne(robot);
+            this.estrategiaAguntar = new AguantarElPartido(robot);
+
+        }
         @Override
-        public void onScannedRobot() {
+        public Estrategia onScannedRobot() {
 
+            return this.estrategiaAguntar;
         }
 
         @Override
-        public void onHitByBullet() {
-
+        public Estrategia onHitByBullet() {
+            if(this.robot.energy <60 && this.estoyEnPared()){
+                return this.estrategiaChampagne;
+            }
+            return this.estrategiaAguntar;
         }
 
         @Override
-        public void onHitWall() {
-
+        public Estrategia onHitWall() {
+            if(this.robot.energy <60 && this.estoyEnPared()){
+                return this.estrategiaChampagne;
+            }
+            return this.estrategiaAguntar;
         }
 
         @Override
-        public void run() {
+        public Estrategia run() {
+            if(this.robot.energy <60 && this.estoyEnPared()){
+                return this.estrategiaChampagne;
+            }
+            return this.estrategiaAguntar;
 
+        }
+
+        private boolean estoyEnPared(){
+            if ((this.robot.robotY == 0) || (this.robot.robotX == 0)
+                    || (this.robot.robotX == this.robot.fieldWidth) || (this.robot.robotY == this.robot.fieldHeight)){
+                return true;
+            }
+            return false;
         }
     }
 }
