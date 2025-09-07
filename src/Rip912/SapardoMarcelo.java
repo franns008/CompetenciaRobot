@@ -5,14 +5,14 @@ import robocode.*;
 // Bicocchi Damián
 public class SapardoMarcelo extends JuniorRobot{
 
-    private Estratega estratega; //deprecated
+    private Estratega estratega;
     private Estrategia estrategia;
 
 
     @Override
     public void run() {
         setColors(red, white, white, red, black);
-        estratega = new Muñeco(this);
+        estratega = Michoneta.getInstance(this);
         estrategia = estratega.run();
         estrategia.run();
     }
@@ -22,7 +22,6 @@ public class SapardoMarcelo extends JuniorRobot{
      */
     @Override
     public void onScannedRobot() {
-
         estrategia =this.estratega.onScannedRobot();
         estrategia.onScannedRobot();
     }
@@ -48,21 +47,29 @@ public class SapardoMarcelo extends JuniorRobot{
     }
 
 
-    private class Michoneta implements Estratega{
+    private static class Michoneta implements Estratega{
         private Estrategia estrategiaAguntar;
         private Estrategia estrategiaChampagne;
         private JuniorRobot robot;
-
-        public Michoneta(JuniorRobot robot) {
+        private static Michoneta instance;
+        private final int minimalNumberOfEnemies = 100;
+        private Michoneta(JuniorRobot robot) {
             this.robot = robot;
             this.estrategiaChampagne = new FutbolChampagne(robot);
             this.estrategiaAguntar = new AguantarElPartido(robot);
 
         }
 
+        public static Michoneta getInstance(JuniorRobot robot) {
+            if (instance == null) {
+                instance = new Michoneta(robot);
+            }
+            return instance;
+        }
+
         @Override
         public Estrategia onScannedRobot() {
-            if(this.robot.others<6){
+            if(this.robot.others<minimalNumberOfEnemies){
                 return estrategiaAguntar;
             }
             return estrategiaChampagne;
@@ -70,7 +77,7 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia onHitByBullet() {
-            if(this.robot.others<6){
+            if(this.robot.others<minimalNumberOfEnemies){
                 return estrategiaAguntar;
             }
             return estrategiaChampagne;
@@ -78,7 +85,7 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia onHitWall() {
-            if(this.robot.others<6){
+            if(this.robot.others<minimalNumberOfEnemies){
                 return estrategiaAguntar;
             }
             return estrategiaChampagne;
@@ -86,36 +93,42 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia run() {
-            if(this.robot.others<6){
+            if(this.robot.others<minimalNumberOfEnemies){
                 return estrategiaAguntar;
             }
             return estrategiaChampagne;
         }
-
-
 
     }
 
-    private class Muñeco implements Estratega {
+    private static class Muñeco implements Estratega {
         private Estrategia estrategiaAguntar;
         private Estrategia estrategiaChampagne;
         private JuniorRobot robot;
+        private static Muñeco instance;
 
-        public Muñeco(JuniorRobot robot) {
+        private Muñeco(JuniorRobot robot) {
             this.robot = robot;
             this.estrategiaChampagne = new FutbolChampagne(robot);
             this.estrategiaAguntar = new AguantarElPartido(robot);
 
         }
+
+        public static Muñeco getInstance(JuniorRobot robot) {
+            if (instance == null) {
+                instance = new Muñeco(robot);
+            }
+            return instance;
+        }
+
         @Override
         public Estrategia onScannedRobot() {
-
             return this.estrategiaAguntar;
         }
 
         @Override
         public Estrategia onHitByBullet() {
-            if(this.robot.energy <60 && this.estoyEnPared()){
+            if(this.robot.energy >60 && this.estoyEnPared()){
                 return this.estrategiaChampagne;
             }
             return this.estrategiaAguntar;
@@ -123,7 +136,7 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia onHitWall() {
-            if(this.robot.energy <60 && this.estoyEnPared()){
+            if(this.robot.energy >50 && this.estoyEnPared()){
                 return this.estrategiaChampagne;
             }
             return this.estrategiaAguntar;
@@ -131,7 +144,7 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia run() {
-            if(this.robot.energy <60 && this.estoyEnPared()){
+            if(this.robot.energy >60 && this.estoyEnPared()){
                 return this.estrategiaChampagne;
             }
             return this.estrategiaAguntar;
