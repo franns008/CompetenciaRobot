@@ -123,7 +123,7 @@ public class AguantarElPartido implements Estrategia{
 
     @Override
     public void onScannedRobot() {
-    /*double angleToFire = getAngleToShoot();
+        double angleToFire = getAngleToShoot();
 
         // Apuntar el cañón hacia ese ángulo
         double gunTurn = Utils.normalRelativeAngleDegrees(angleToFire);
@@ -131,7 +131,6 @@ public class AguantarElPartido implements Estrategia{
         if (robot.scannedDistance < 250){
             robot.fire(2);
         }
-    */
     }
 
 
@@ -255,53 +254,57 @@ public class AguantarElPartido implements Estrategia{
                 robot.turnBackRight(50,90);
                 robot.back(30);
             }
-
             robot.turnGunRight((int)attackingAngle);
+            robot.fire(1.5);
             onCorner = false;
             cantToques=0;
+            elegirPared =true;
         }
     }
 
     @Override
     public void onHitWall() {
         cantToques++;
-        if(cantToques == 2) {
-            this.onCorner = true;
-            int esquina = this.conocerEsquinaMasCercana();
-
+        if(cantToques ==2) {
             this.corregirArma();
+            this.onCorner = true;
         } else if (cantToques < 2) {
             this.onCorner = false;
-            cantToques = 1;
-            elegirPared = true;
+            robot.turnGunRight(90);
+            robot.turnRight(90);
+            int esquina = this.conocerEsquinaMasCercana();
+            this.movimientoEsquina(esquina);
         }
     }
 
-
     @Override
     public void run() {
-        onCorner = false;
+
         if (elegirPared) {
             myMap = chooseAWall();
             elegirPared = false;
         }
-        if (cantToques <1){
+        if (cantToques ==0){
             this.robot.ahead(20);
             this.chequearTodosLados();
             robot.turnGunTo(robot.heading + gunAngle);
         }
         if(!onCorner) {
-            if (cantToques < 2) {
+            if (cantToques == 1) {
                 if (volverAtras) {
                     this.robot.back(20);
+                    this.chequearTodosLados();
+                    System.out.println("entro 1");
                 } else {
                     this.robot.ahead(20);
+                    this.chequearTodosLados();
+                    System.out.println("entro 2");
                 }
-                this.chequearTodosLados();
                 robot.turnGunTo(robot.heading + gunAngle);
             }
         }
         if(onCorner){
+
             this.chequearTodosLados();
             this.robot.turnGunTo(this.robot.heading + gunAngle);
         }
