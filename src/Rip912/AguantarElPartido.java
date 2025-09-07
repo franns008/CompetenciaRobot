@@ -198,9 +198,11 @@ public class AguantarElPartido implements Estrategia{
 
             double attackingAngle = getAngleToShoot();
             if (volverAtras) {
-                robot.turnAheadRight(70, 90);
+                robot.turnAheadRight(50, 90);
+                robot.ahead(30);
             }else {
-                robot.turnBackRight(70,90);
+                robot.turnBackRight(50,90);
+                robot.back(30);
             }
 
             robot.turnGunRight((int)attackingAngle);
@@ -220,14 +222,6 @@ public class AguantarElPartido implements Estrategia{
         }
     }
 
-    private boolean estoyEnEsquina() {
-        double margen = 5; // tolerancia para considerar que estoy "pegado"
-        boolean cercaX = (robot.robotX < margen) || (robot.robotX > robot.fieldWidth - margen);
-        boolean cercaY = (robot.robotY < margen) || (robot.robotY > robot.fieldHeight - margen);
-        return cercaX && cercaY;
-    }
-
-
     @Override
     public void run() {
         onCorner = false;
@@ -237,6 +231,7 @@ public class AguantarElPartido implements Estrategia{
             while (cantToques <1){
                 this.robot.ahead(20);
                 this.chequearTodosLados();
+                robot.turnGunTo(robot.heading + gunAngle);
             }
             robot.turnGunRight(90);
             robot.turnRight(90);
@@ -246,15 +241,14 @@ public class AguantarElPartido implements Estrategia{
                 if(volverAtras){
                     this.robot.back(20);
                     this.chequearTodosLados();
-                    robot.turnGunTo(gunAngle);
+                    robot.turnGunTo(robot.heading + gunAngle);
                 }else{
                     this.robot.ahead(20);
                     this.chequearTodosLados();
-                    robot.turnGunTo(gunAngle);
                 }
             }
             this.corregirArma();
-            while (estoyEnEsquina()){
+            while (onCorner){
                 this.chequearTodosLados();
                 this.robot.turnGunTo(this.robot.heading + gunAngle);
             }
