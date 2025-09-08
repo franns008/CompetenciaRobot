@@ -8,8 +8,16 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
     private  AguantarElPartido aguantar;
     private  JuniorRobot robot;
 
+    public DirectorTecnicoRiver(JuniorRobot robot) {
+        this.robot = robot;
+    }
+    public abstract Estrategia onScannedRobot();
 
+    public abstract Estrategia onHitByBullet();
 
+    public abstract Estrategia onHitWall();
+
+    public abstract Estrategia run();
 
     protected class FutbolChampagne implements Estrategia {
 

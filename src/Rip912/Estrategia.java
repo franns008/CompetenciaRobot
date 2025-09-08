@@ -12,7 +12,6 @@ public interface Estrategia {
 
     void run();
 
-    boolean soyEse(Estrategia e);
 }
 
 
