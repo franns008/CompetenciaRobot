@@ -2,43 +2,42 @@ package Rip912;
 
 import robocode.JuniorRobot;
 
-public class Michoneta extends Estratega{
-    private JuniorRobot robot;
-    private int minimumNumberOfRobots;
+public class Michoneta extends DirectorTecnicoRiver{
+
+    private final int minimumNumberOfRobots = 6;
 
     public Michoneta(JuniorRobot robot){
-        this.robot = robot;
-        this.minimumNumberOfRobots = 6;
+        super(robot);
     }
 
     @Override
     public Estrategia run() {
         if(this.robot.others<minimumNumberOfRobots){
-            return this.ponerAguantarElPartido(robot);
+            return this.aguantar;
         }
-        return this.ponerFutbolChampagne(robot);
+        return this.champagne;
     }
 
     @Override
     public Estrategia onHitWall() {
         if(this.robot.others<minimumNumberOfRobots){
-            return this.ponerAguantarElPartido(robot);
+            return this.aguantar;
         }
-        return this.ponerFutbolChampagne(robot);
+        return this.aguantar;
     }
 
     @Override
     public Estrategia onScannedRobot() {
 
-        return this.ponerAguantarElPartido(robot);
+        return this.aguantar;
 
     }
 
     @Override
     public Estrategia onHitByBullet() {
         if(this.robot.others<minimumNumberOfRobots){
-            return this.ponerAguantarElPartido(robot);
+            return this.aguantar;
         }
-        return this.ponerFutbolChampagne(robot);
+        return this.champagne;
     }
 }

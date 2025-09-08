@@ -4,12 +4,14 @@ import robocode.JuniorRobot;
 import robocode.util.Utils;
 
 public abstract  class DirectorTecnicoRiver implements Estratega {
-    private  FutbolChampagne champagne;
-    private  AguantarElPartido aguantar;
-    private  JuniorRobot robot;
+    protected   FutbolChampagne champagne;
+    protected   AguantarElPartido aguantar;
+    protected   JuniorRobot robot;
 
     public DirectorTecnicoRiver(JuniorRobot robot) {
         this.robot = robot;
+        this.champagne = new FutbolChampagne();
+        this.aguantar = new AguantarElPartido();
     }
     public abstract Estrategia onScannedRobot();
 
@@ -20,8 +22,6 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
     public abstract Estrategia run();
 
     protected class FutbolChampagne implements Estrategia {
-
-        private JuniorRobot robot;
         private boolean volver = false;
         private boolean volverArma = false;
         private boolean onAWall = false;
@@ -32,13 +32,10 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
         private int movimientoCañon = 20;
         private boolean elegirPared = true;
 
-        public FutbolChampagne(JuniorRobot robot) {
-            this.robot = robot;
-        }
 
         private void chequearTodosLados(int limite) {
             // Actualizar ángulo relativo del arma
-            if (this.robot.others <= 7) {
+            if (robot.others <= 7) {
                 this.movimientoCañon = 10;
             }
 
@@ -56,17 +53,17 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
         }
 
         private void posicionArmaEnPared() {
-            if (this.robot.robotX == 0 && this.robot.robotY == 0) {
-                this.robot.bearGunTo(180);
+            if (robot.robotX == 0 && robot.robotY == 0) {
+                robot.bearGunTo(180);
                 gunAngle = 180;
-            } else if (this.robot.robotX == 0 && this.robot.robotY == this.robot.fieldHeight) {
-                this.robot.bearGunTo(0);
+            } else if (robot.robotX == 0 && robot.robotY == robot.fieldHeight) {
+                robot.bearGunTo(0);
                 gunAngle = 0;
-            } else if (this.robot.robotX == this.robot.fieldWidth && this.robot.robotY == 0) {
-                this.robot.bearGunTo(180);
+            } else if (robot.robotX == robot.fieldWidth && robot.robotY == 0) {
+                robot.bearGunTo(180);
                 gunAngle = 180;
             } else {
-                this.robot.bearGunTo(0);
+                robot.bearGunTo(0);
                 gunAngle = 0;
             }
         }
@@ -121,31 +118,27 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
 
         private void disparo(double daño) {
             if (!onAWall) {
-                this.robot.turnGunTo(this.robot.scannedAngle);
-                this.robot.fire(daño);
+                robot.turnGunTo(robot.scannedAngle);
+                robot.fire(daño);
             }
             if (onAWall) {
-                this.robot.fire(daño - 0.2);
+                robot.fire(daño);
             }
         }
 
         @Override
         public void onScannedRobot() {
-        /*if(this.robot.scannedDistance<250 || robot.others>5){
             this.disparo(2);
-        }*/
-            this.disparo(2);
-
         }
 
         @Override
         public void onHitByBullet() {
             cantDisparosRecibidos++;
-            this.robot.turnGunTo(this.robot.hitByBulletAngle);
-            this.robot.fire(2);
+            robot.turnGunTo(robot.hitByBulletAngle);
+            robot.fire(2);
             if ((cantDisparosRecibidos % 3) == 0) {
-                this.robot.turnAheadRight(80, 90);
-                this.robot.ahead(50);
+                robot.turnAheadRight(80, 90);
+                robot.ahead(50);
                 onAWall = false;
                 elegirPared = true;
 
@@ -167,13 +160,11 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
             volver = !volver;
         }
 
-        public boolean soyEse(Estrategia estrategia) {
-            return estrategia instanceof FutbolChampagne;
-        }
+
     }
 
     protected class AguantarElPartido implements Estrategia {
-        private JuniorRobot robot;
+
         private boolean onCorner;
         private boolean volverArma = false;
         private int hitByBulletCounter = 0;
@@ -185,12 +176,6 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
         private MapToWall myMap;
         private boolean volverAtras = false;
         private boolean elegirPared = true;
-
-
-        public AguantarElPartido(JuniorRobot robot) {
-            this.robot = robot;
-        }
-
 
 
         private void chequearTodosLados() {
@@ -207,18 +192,18 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
         }
 
         private void corregirArma() {
-            if (this.robot.robotY == 0 && this.robot.robotX == 0) {
-                this.robot.bearGunTo(90);
+            if (robot.robotY == 0 && robot.robotX == 0) {
+                robot.bearGunTo(90);
                 gunAngle = 90;
                 limiteSup = 90;
                 limiteInf = 0;
-            } else if (this.robot.robotY == 0 && this.robot.robotX == this.robot.fieldWidth) {
-                this.robot.bearGunTo(180);
+            } else if (robot.robotY == 0 && robot.robotX == robot.fieldWidth) {
+                robot.bearGunTo(180);
                 gunAngle = 180;
                 limiteSup = 180;
                 limiteInf = 90;
-            } else if (this.robot.robotY == this.robot.fieldHeight && this.robot.robotX == 0) {
-                this.robot.bearGunTo(90);
+            } else if (robot.robotY == robot.fieldHeight && robot.robotX == 0) {
+                robot.bearGunTo(90);
                 gunAngle = 90;
                 limiteSup = 90;
                 limiteInf = 0;
@@ -226,7 +211,7 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
                 gunAngle = 180;
                 limiteSup = 180;
                 limiteInf = 90;
-                this.robot.bearGunTo(180);
+                robot.bearGunTo(180);
             }
             if (volverAtras) {
                 limiteInf += 270;
@@ -235,18 +220,18 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
         }
 
         private double getAngleToShoot() {
-            double angleToEnemy = Math.toRadians(this.robot.heading) + Math.toRadians(this.robot.scannedBearing);
-            double enemyX = this.robot.robotX + this.robot.scannedDistance * Math.sin(angleToEnemy);
-            double enemyY = this.robot.robotY + this.robot.scannedDistance * Math.cos(angleToEnemy);
+            double angleToEnemy = Math.toRadians(robot.heading) + Math.toRadians(robot.scannedBearing);
+            double enemyX = robot.robotX + robot.scannedDistance * Math.sin(angleToEnemy);
+            double enemyY = robot.robotY + robot.scannedDistance * Math.cos(angleToEnemy);
 
             // Datos útiles del enemigo
-            double enemyHeading = this.robot.scannedHeading;   // en grados
-            double enemyVelocity = this.robot.scannedVelocity; // positivo adelante, negativo atras
+            double enemyHeading = robot.scannedHeading;   // en grados
+            double enemyVelocity = robot.scannedVelocity; // positivo adelante, negativo atras
 
             // Calcular el ángulo futuro para disparar
 
             double angleToFire = calcularAnguloDeDisparo(
-                    this.robot.robotX, this.robot.robotY,
+                    robot.robotX, robot.robotY,
                     enemyX, enemyY,
                     enemyVelocity, enemyHeading
             );
@@ -267,9 +252,10 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
             robot.turnGunRight((int) gunTurn);
             if (robot.scannedDistance < 100) {
                 robot.fire(3);
-            }
-            if (robot.scannedDistance < 250) {
+            } else if (robot.scannedDistance < 250) {
                 robot.fire(2);
+            } else if (robot.scannedDistance < 350){
+                robot.fire(1);
             }
 
 
@@ -438,18 +424,18 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
                 elegirPared = false;
             }
             if (cantToques == 0) {
-                this.robot.ahead(20);
+                robot.ahead(20);
                 this.chequearTodosLados();
                 robot.turnGunTo(robot.heading + gunAngle);
             }
             if (!onCorner) {
                 if (cantToques == 1) {
                     if (volverAtras) {
-                        this.robot.back(20);
+                        robot.back(20);
                         this.chequearTodosLados();
                         System.out.println("entro 1");
                     } else {
-                        this.robot.ahead(20);
+                        robot.ahead(20);
                         this.chequearTodosLados();
                         System.out.println("entro 2");
                     }
@@ -459,12 +445,8 @@ public abstract  class DirectorTecnicoRiver implements Estratega {
             if (onCorner) {
 
                 this.chequearTodosLados();
-                this.robot.turnGunTo(this.robot.heading + gunAngle);
+                robot.turnGunTo(robot.heading + gunAngle);
             }
-        }
-
-        public boolean soyEse(Estrategia estrategia) {
-            return estrategia instanceof AguantarElPartido;
         }
 
     }
