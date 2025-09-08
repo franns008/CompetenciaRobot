@@ -3,12 +3,8 @@ package Rip912;
 import robocode.JuniorRobot;
 import robocode.util.Utils;
 
-public abstract class Estratega {
-    private Estrategia estrategia;
-
-    public Estratega (){
-        estrategia = null;
-    }
+public abstract  class Estratega {
+    private  Estrategia estrategia;
 
     public abstract Estrategia onScannedRobot();
 
@@ -19,15 +15,17 @@ public abstract class Estratega {
     public abstract Estrategia run();
 
     public Estrategia ponerFutbolChampagne(JuniorRobot robot) {
-        if(this.estrategia ==null){
+        Estrategia champagne = new FutbolChampagne(robot);
+        if(this.estrategia ==null || !champagne.soyEse(estrategia)){
             this.estrategia = new FutbolChampagne(robot);
         }
         return estrategia;
     }
 
     public Estrategia ponerAguantarElPartido(JuniorRobot robot) {
-        if(this.estrategia ==null){
-            this.estrategia = new AguantarElPartido(robot);
+        Estrategia champagne = new AguantarElPartido(robot);
+        if(this.estrategia ==null || !champagne.soyEse(estrategia)){
+            this.estrategia = new FutbolChampagne(robot);
         }
         return estrategia;
     }
@@ -180,10 +178,12 @@ public abstract class Estratega {
             volver = !volver;
         }
 
-
+        public boolean soyEse(Estrategia estrategia) {
+            return estrategia instanceof FutbolChampagne;
+        }
     }
 
-    public class AguantarElPartido implements Estrategia {
+    private class AguantarElPartido implements Estrategia {
         private JuniorRobot robot;
         private boolean onCorner;
         private boolean volverArma = false;
@@ -201,6 +201,7 @@ public abstract class Estratega {
         public AguantarElPartido(JuniorRobot robot) {
             this.robot = robot;
         }
+
 
 
         private void chequearTodosLados() {
@@ -471,6 +472,10 @@ public abstract class Estratega {
                 this.chequearTodosLados();
                 this.robot.turnGunTo(this.robot.heading + gunAngle);
             }
+        }
+
+        public boolean soyEse(Estrategia estrategia) {
+            return estrategia instanceof AguantarElPartido;
         }
 
     }

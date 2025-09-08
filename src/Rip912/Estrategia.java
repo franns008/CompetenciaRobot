@@ -1,5 +1,7 @@
 package Rip912;
 
+import robocode.JuniorRobot;
+
 public interface Estrategia {
 
     void onScannedRobot();
@@ -9,6 +11,8 @@ public interface Estrategia {
     void onHitWall();
 
     void run();
+
+    boolean soyEse(Estrategia e);
 }
 
 
