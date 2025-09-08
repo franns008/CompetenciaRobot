@@ -14,7 +14,7 @@ public class Muñeco extends Estratega{
 
     @Override
     public Estrategia run() {
-        if(this.robot.others<minimumEnergy){
+        if(this.robot.energy<minimumEnergy){
             return this.ponerAguantarElPartido(robot);
         }
         return this.ponerFutbolChampagne(robot);
@@ -22,7 +22,7 @@ public class Muñeco extends Estratega{
 
     @Override
     public Estrategia onHitWall() {
-        if(this.robot.others<minimumEnergy){
+        if(this.robot.energy<minimumEnergy){
             return this.ponerAguantarElPartido(robot);
         }
         return this.ponerFutbolChampagne(robot);
@@ -35,7 +35,7 @@ public class Muñeco extends Estratega{
 
     @Override
     public Estrategia onHitByBullet() {
-        if(this.robot.others<minimumEnergy){
+        if(this.robot.energy<minimumEnergy){
             return this.ponerAguantarElPartido(robot);
         }
         return this.ponerFutbolChampagne(robot);

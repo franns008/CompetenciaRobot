@@ -22,6 +22,7 @@ public class SapardoMarcelo extends JuniorRobot{
     /**
      * onScannedRobot: What to do when you see another robot
      */
+
     @Override
     public void onScannedRobot() {
         estrategia =this.estratega.onScannedRobot();
