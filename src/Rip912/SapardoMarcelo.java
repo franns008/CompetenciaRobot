@@ -12,7 +12,7 @@ public class SapardoMarcelo extends JuniorRobot{
     @Override
     public void run() {
         setColors(red, white, white, red, black);
-        estratega = Muñeco.getInstance(this);
+        estratega = new Muñeco(this);
         while(true) {
             estrategia = estratega.run();
             estrategia.run();
@@ -24,7 +24,6 @@ public class SapardoMarcelo extends JuniorRobot{
      */
     @Override
     public void onScannedRobot() {
-
         estrategia =this.estratega.onScannedRobot();
         estrategia.onScannedRobot();
     }
@@ -42,14 +41,15 @@ public class SapardoMarcelo extends JuniorRobot{
     /**
      * onHitWall: What to do when you hit a wall
      */
+
     @Override
     public void onHitWall() {
-
         estrategia = this.estratega.onHitWall();
         estrategia.onHitWall();
     }
 
-    private static class Michoneta implements Estratega{
+
+   /* private static class Michoneta implements Estratega{
         private Estrategia estrategiaAguantar;
         private Estrategia estrategiaChampagne;
         private JuniorRobot robot;
@@ -165,4 +165,7 @@ public class SapardoMarcelo extends JuniorRobot{
             return false;
         }
     }
+
+    */
+
 }
