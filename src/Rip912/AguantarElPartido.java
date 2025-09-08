@@ -115,6 +115,12 @@ public class AguantarElPartido implements Estrategia{
 
 
         // Predicción de posición futura del enemigo
+        // Lo que hace es una traducción a coordenadas polares
+        // Las coordenadas polares me dicen cuanto me desplazo (la magnitud)
+        // y en que direccion (el heading)
+        // Para pasar esto a coordenadas comunes, usamos seno y coseno multiplicado por la magnitud(velocidad)
+        // y le sumamos la posición del enemigo para obtener el eje x e y donde supuestamente
+        // podria estar
         double futuroX = enemigoX + Math.sin(Math.toRadians(enemigoHeading)) * enemigoVel ;
         double futuroY = enemigoY + Math.cos(Math.toRadians(enemigoHeading)) * enemigoVel ;
 
@@ -122,6 +128,11 @@ public class AguantarElPartido implements Estrategia{
         double dx = futuroX - miX;
         double dy = futuroY - miY;
 
+        // arcotangente2 es medio mágico
+        // Devuelve el angulo de un vector (algo que tiene X e Y) en el mapa
+        // El algo que tiene X e Y son las variables dx y dy
+        // Esto me da el angulo al que tengo que apuntar desde donde estoy para pegarle
+        // a mi prediccion de donde esta
         double angulo = Math.toDegrees(Math.atan2(dx, dy));
 
         // Normalizar entre 0°–360°
