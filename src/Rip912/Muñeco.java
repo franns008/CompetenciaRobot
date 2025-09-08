@@ -3,12 +3,18 @@ package Rip912;
 import robocode.JuniorRobot;
 
 public class Muñeco extends DirectorTecnicoRiver{
-
-    private Estrategia estrategia;
+    private static Muñeco instance;
     private int minimumEnergy = 60;
 
-    public Muñeco(JuniorRobot robot){
+    private Muñeco(JuniorRobot robot){
         super(robot);
+    }
+
+    public static Muñeco getInstance(JuniorRobot robot) {
+        if (instance == null){
+            instance = new Muñeco(robot);
+        }
+        return instance;
     }
 
     @Override

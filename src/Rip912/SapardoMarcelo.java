@@ -12,7 +12,7 @@ public class SapardoMarcelo extends JuniorRobot{
     @Override
     public void run() {
         setColors(red, white, white, red, black);
-        estratega = new Muñeco(this);
+        estratega = Muñeco.getInstance(this);
         while(true) {
             estrategia = estratega.run();
             estrategia.run();

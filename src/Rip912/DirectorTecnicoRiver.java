@@ -3,7 +3,7 @@ package Rip912;
 import robocode.JuniorRobot;
 import robocode.util.Utils;
 
-public abstract  class DirectorTecnicoRiver implements Estratega {
+public abstract class DirectorTecnicoRiver implements Estratega {
     protected   FutbolChampagne champagne;
     protected   AguantarElPartido aguantar;
     protected   JuniorRobot robot;

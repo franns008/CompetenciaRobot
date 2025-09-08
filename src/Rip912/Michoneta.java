@@ -4,11 +4,21 @@ import robocode.JuniorRobot;
 
 public class Michoneta extends DirectorTecnicoRiver{
 
+    private static Michoneta instance;
     private final int minimumNumberOfRobots = 6;
 
-    public Michoneta(JuniorRobot robot){
+    private Michoneta(JuniorRobot robot){
         super(robot);
     }
+
+    public static Michoneta getInstance(JuniorRobot robot){
+        if (instance == null){
+            instance = new Michoneta(robot);
+        }
+        return instance;
+    }
+
+
 
     @Override
     public Estrategia run() {
