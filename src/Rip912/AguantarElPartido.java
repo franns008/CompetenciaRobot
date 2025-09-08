@@ -238,9 +238,8 @@ public class AguantarElPartido implements Estrategia{
                 robot.turnBackRight(50,90);
                 robot.back(30);
             }
-
             robot.turnGunRight((int)attackingAngle);
-            robot.fire(1);
+            robot.fire(1.5);
             onCorner = false;
             cantToques=0;
             elegirPared =true;
@@ -278,14 +277,18 @@ public class AguantarElPartido implements Estrategia{
             if (cantToques == 1) {
                 if (volverAtras) {
                     this.robot.back(20);
+                    this.chequearTodosLados();
+                    System.out.println("entro 1");
                 } else {
                     this.robot.ahead(20);
+                    this.chequearTodosLados();
+                    System.out.println("entro 2");
                 }
-                this.chequearTodosLados();
                 robot.turnGunTo(robot.heading + gunAngle);
             }
         }
         if(onCorner){
+
             this.chequearTodosLados();
             this.robot.turnGunTo(this.robot.heading + gunAngle);
         }

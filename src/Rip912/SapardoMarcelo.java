@@ -111,7 +111,7 @@ public class SapardoMarcelo extends JuniorRobot{
         private Estrategia estrategiaChampagne;
         private JuniorRobot robot;
         private static Muñeco instance;
-        private final int minimumEnergy = 600;
+        private final int minimumEnergy = 60;
 
         private Muñeco(JuniorRobot robot) {
             this.robot = robot;
@@ -125,16 +125,16 @@ public class SapardoMarcelo extends JuniorRobot{
         }
 
         public static Muñeco getInstance(JuniorRobot robot) {
-
-            if (instance == null) {
+            if (instance == null || instance.robot != robot) {
                 instance = new Muñeco(robot);
             }
             return instance;
         }
 
+
         @Override
         public Estrategia onHitByBullet() {
-            if(this.robot.energy > minimumEnergy || !this.estoyEnPared()){
+            if(this.robot.energy > minimumEnergy){
                 return this.estrategiaChampagne;
             }
             return this.estrategiaAguantar;
@@ -142,7 +142,7 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia onHitWall() {
-            if(this.robot.energy >minimumEnergy || !this.estoyEnPared()){
+            if(this.robot.energy >minimumEnergy){
                 return this.estrategiaChampagne;
             }
             return this.estrategiaAguantar;
@@ -150,8 +150,11 @@ public class SapardoMarcelo extends JuniorRobot{
 
         @Override
         public Estrategia run() {
-            return this.estrategiaAguantar;
+            if(this.robot.energy >minimumEnergy ){
+                return this.estrategiaChampagne;
 
+            }
+            return this.estrategiaAguantar;
         }
 
         private boolean estoyEnPared(){
